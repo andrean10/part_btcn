@@ -1,11 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:part_btcn/app/data/db/history/order_db.dart';
 import 'package:part_btcn/app/modules/core/home/controllers/home_controller.dart';
 
-import '../../../../../shared/shared_enum.dart';
 import '../../../../../shared/shared_theme.dart';
+import '../../../../../utils/constants_assets.dart';
 import '../../../../helpers/format_date_time.dart';
 
 class HomeFinanceScreen extends GetView<HomeController> {
@@ -15,80 +16,87 @@ class HomeFinanceScreen extends GetView<HomeController> {
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
 
-    final dummyHistoryFilterRequest = controller.initC.dummyHistory
-        .where((element) =>
-            element.type == TypeGoods.req &&
-            element.statusApproval == StatusApproval.approved)
-        .toList();
+    return FirestoreListView.separated(
+      query: controller
+          .colOrder()
+          .where(FieldPath.fromString('typeStatus'), isNotEqualTo: 'rejected')
+          .orderBy(FieldPath.fromString('createdAt'), descending: true),
+      itemBuilder: (context, doc) {
+        final order = doc.data();
 
-    return ListView.separated(
-      itemBuilder: (context, index) {
-        final history = dummyHistoryFilterRequest[index];
-        return _buildListItem(
-          context: context,
-          index: index,
-          history: history,
-          textTheme: textTheme,
+        final typeGood = switch (order.type) {
+          'request' => ('Request', ConstantsAssets.icRequestPart),
+          'return' => ('Return', ConstantsAssets.icReturnPart),
+          _ => ('', '')
+        };
+
+        final statusApproval = switch (order.typeStatus) {
+          'approved' => ('Disetujui', SharedTheme.successColor),
+          'pending' => ('Menunggu', SharedTheme.warningColor),
+          'rejected' => ('Ditolak', SharedTheme.errorColor),
+          _ => ('', Colors.black)
+        };
+
+        final methodPayment = switch (order.typePayment) {
+          'cash' => 'COD',
+          'transfer' => 'Transfer',
+          'qris' => 'QRIS',
+          _ => null
+        };
+
+        final statusPayment = switch (order.statusPayment) {
+          'paid' => ('Lunas', SharedTheme.successColor),
+          'credit' => ('Menunggu', SharedTheme.warningColor),
+          _ => null
+        };
+
+        final formatDateTime = FormatDateTime.dateToString(
+          newPattern: 'EEEE, dd MMMM yyyy, HH: mm',
+          value: order.createdAt?.toIso8601String(),
+        );
+
+        return ListTile(
+          title: Text('No Order : ${order.id}'),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Dibuat : $formatDateTime'),
+              const SizedBox(height: 6),
+              _builderState(
+                context: context,
+                title: 'Tipe',
+                typeGood: typeGood,
+                statusApproval: statusApproval,
+              ),
+              if (methodPayment != null && statusPayment != null)
+                Container(
+                  margin: const EdgeInsets.only(top: 6),
+                  child: _builderState(
+                    context: context,
+                    title: 'Pembayaran',
+                    methodPayment: methodPayment,
+                    statusPayment: statusPayment,
+                  ),
+                ),
+            ],
+          ),
+          titleTextStyle: textTheme.titleSmall,
+          leading: SvgPicture.asset(width: 24, typeGood.$2),
+          isThreeLine: true,
+          onTap: () => controller.moveToDetailFinance(order),
         );
       },
-      itemCount: dummyHistoryFilterRequest.length,
       separatorBuilder: (BuildContext context, int index) => const Divider(),
     );
   }
 
-  Widget _buildListItem({
-    required BuildContext context,
-    required int index,
-    required OrderDB history,
-    required TextTheme textTheme,
-  }) {
-    final typeGood = controller.getTypeGood(history.type);
-
-    final statusPayment = controller.getStatusPayment(history.statusPayment);
-    final methodPayment = controller.getMethodPayment(history.methodPayment);
-    final statusApproval = controller.getStatusApproval(history.statusApproval);
-    final relativeDateText =
-        FormatDateTime.formatRelativeDateText(history.createdAt);
-
-    return ListTile(
-      title: Text('No Order : ${history.id}'),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Dibuat : $relativeDateText'),
-          const SizedBox(height: 6),
-          _buildState(
-            context: context,
-            title: 'Tipe',
-            typeGood: typeGood,
-            statusApproval: statusApproval,
-          ),
-          if (methodPayment != null && statusPayment != null)
-            Container(
-              margin: const EdgeInsets.only(top: 6),
-              child: _buildState(
-                context: context,
-                title: 'Pembayaran',
-                methodPayment: methodPayment,
-                statusPayment: statusPayment,
-              ),
-            ),
-        ],
-      ),
-      titleTextStyle: textTheme.titleSmall,
-      leading: SvgPicture.asset(width: 24, typeGood.$2),
-      isThreeLine: true,
-      onTap: () => controller.moveToDetailFinance(history),
-    );
-  }
-
-  Widget _buildState({
+  Widget _builderState({
     required BuildContext context,
     required String title,
     (String, String)? typeGood,
     (String, Color)? statusApproval,
     String? methodPayment,
-    (String?, Color?)? statusPayment,
+    (String, Color?)? statusPayment,
   }) {
     final textTheme = context.textTheme;
 
@@ -148,12 +156,12 @@ class HomeFinanceScreen extends GetView<HomeController> {
                 }
 
                 if (statusPayment != null) {
-                  text = statusPayment.$1!;
+                  text = statusPayment.$1;
                   color = statusPayment.$2;
                 }
 
                 return Center(
-                  child: _buildContainerState(
+                  child: _builderContainerState(
                     context: context,
                     text: text,
                     color: color,
@@ -167,7 +175,7 @@ class HomeFinanceScreen extends GetView<HomeController> {
     );
   }
 
-  Widget _buildContainerState({
+  Widget _builderContainerState({
     required BuildContext context,
     required String text,
     required Color? color,

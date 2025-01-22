@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:part_btcn/app/data/model/order/order_model.dart';
 import 'package:part_btcn/app/helpers/format_date_time.dart';
 import 'package:part_btcn/utils/constants_assets.dart';
-import '../../../../../shared/shared_enum.dart';
 import '../../../../../shared/shared_theme.dart';
 import '../controllers/home_controller.dart';
 
@@ -14,46 +16,50 @@ class HomeAdminScreen extends GetView<HomeController> {
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
 
-    return ListView.separated(
-      itemBuilder: (context, index) {
-        return _buildListItem(context, index, textTheme);
+    return FirestoreListView.separated(
+      query: controller
+          .colOrder()
+          .orderBy(FieldPath.fromString('createdAt'), descending: true),
+      itemBuilder: (context, doc) {
+        final data = doc.data();
+        return _buildListItem(context, textTheme, data);
       },
-      itemCount: 10,
-      separatorBuilder: (BuildContext context, int index) =>
-          const SizedBox(height: 8),
+      separatorBuilder: (context, index) => const SizedBox(height: 8),
     );
   }
 
-  Widget _buildListItem(BuildContext context, int index, TextTheme textTheme) {
-    final isOdd = index.isOdd;
-    final status = isOdd
-        ? StatusApproval.approved
-        : (index == 4 || index == 6)
-            ? StatusApproval.rejected
-            : StatusApproval.pending;
+  Widget _buildListItem(
+    BuildContext context,
+    TextTheme textTheme,
+    OrderModel data,
+  ) {
+    final isRequest = data.type == 'request';
 
     return ListTile(
-      title: const Text('CLG906F - 40C0441P01'),
+      title: Text('No Order: ${data.id}'),
       subtitle: Text(
-        '${isOdd ? 'Request Barang' : 'Return Barang'} - ${FormatDateTime.dateToString(
+        '${isRequest ? 'Request Barang' : 'Return Barang'} - ${FormatDateTime.dateToString(
           newPattern: 'EEE, dd MMM yyyy',
-          value: DateTime.now().toString(),
+          value: data.createdAt.toString(),
         )}',
       ),
       titleTextStyle: textTheme.titleSmall,
       subtitleTextStyle: textTheme.bodySmall,
       leading: SvgPicture.asset(
         width: 24,
-        isOdd ? ConstantsAssets.icRequestPart : ConstantsAssets.icReturnPart,
+        isRequest
+            ? ConstantsAssets.icRequestPart
+            : ConstantsAssets.icReturnPart,
       ),
-      trailing: _buildState(context, status.name),
-      onTap: () => controller.moveToDetailAdmin(status),
+      trailing: _buildState(context, data),
+      onTap: () => controller.moveToDetailAdmin(data),
     );
   }
 
-  Widget _buildState(BuildContext context, String status) {
+  Widget _buildState(BuildContext context, OrderModel data) {
     final theme = context.theme;
     final textTheme = context.textTheme;
+    final status = data.typeStatus;
     Color? color;
 
     switch (status) {
@@ -76,7 +82,7 @@ class HomeAdminScreen extends GetView<HomeController> {
         Text(
           FormatDateTime.dateToString(
             newPattern: 'HH:mm',
-            value: DateTime.now().toString(),
+            value: data.createdAt.toString(),
           ),
           style: textTheme.labelSmall,
         ),

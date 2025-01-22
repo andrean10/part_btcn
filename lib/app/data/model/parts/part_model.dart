@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../helpers/format_date_time.dart';
+import '../../../helpers/format_date_time.dart';
 import 'review/review_model.dart';
 
 part 'part_model.freezed.dart';
@@ -16,15 +16,18 @@ class PartModel with _$PartModel {
       fromJson: FormatDateTime.timestampFromJson,
       toJson: FormatDateTime.timestampToJson,
     )
-    required DateTime createdAt,
-    @JsonKey(
-      fromJson: FormatDateTime.timestampFromJson,
-      toJson: FormatDateTime.timestampToJson,
-    )
-    required DateTime updatedAt,
-    @Default(0) int price,
+    DateTime? createdAt,
+    // @JsonKey(
+    //   fromJson: FormatDateTime.timestampFromJson,
+    //   toJson: FormatDateTime.timestampToJson,
+    // )
+    // DateTime? updatedAt,
+    @Default(0) num price,
+    @Default(0) num quantity,
+    @Default(0) num totalPrice,
     required String id,
-    List<ReviewModel>? reviews,
+    required List<String> modelIds,
+    // List<ReviewModel>? reviews,
   }) = _PartModel;
 
   factory PartModel.fromJson(Map<String, dynamic> json) =>

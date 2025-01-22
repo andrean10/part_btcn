@@ -11,6 +11,7 @@ abstract class ConstantsAssets {
 
   // IMAGE
   static const imgSplash = '${_imgPath}img_splash.webp';
+  static const imgLogo = '${_imgPath}img_logo.jpeg';
   static const imgNoPhoto = '${_imgPath}img_no_photo.png';
   static const imgNoPicture = '${_imgPath}img_no_picture.jpg';
   static const imgPictureCorrupt = '${_imgPath}img_picture_corrupt.jpg';

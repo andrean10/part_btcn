@@ -1,17 +1,27 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:part_btcn/app/data/model/item/item_model.dart';
+import 'package:part_btcn/app/data/model/order/order_model.dart';
+import 'package:part_btcn/app/data/model/parts/part_model.dart';
+import 'package:part_btcn/app/data/model/parts/review/review_model.dart';
 import 'package:part_btcn/app/modules/core/init/controllers/init_controller.dart';
 import 'package:part_btcn/app/modules/widgets/snackbar/snackbar.dart';
+import 'package:part_btcn/utils/constants_keys.dart';
 
 import '../../../../routes/app_pages.dart';
+import '../../../widgets/dialog/dialogs.dart';
 
 class DetailPartController extends GetxController {
   late final InitController _initC;
 
-  final images = [
-    "https://ryahuqeeaejuymakofdj.supabase.co/storage/v1/object/sign/btcn/images/40C0441P01%20(1).jpeg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJidGNuL2ltYWdlcy80MEMwNDQxUDAxICgxKS5qcGVnIiwiaWF0IjoxNzMzOTk4ODkwLCJleHAiOjE3NjU1MzQ4OTB9.D4vBol18h0dnV3HSzu8rohJoCVirH4GEEfIiqGLIDNs&t=2024-12-12T10%3A21%3A30.628Z",
-    "https://ryahuqeeaejuymakofdj.supabase.co/storage/v1/object/sign/btcn/images/40C0441P01%20(2).jpeg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJidGNuL2ltYWdlcy80MEMwNDQxUDAxICgyKS5qcGVnIiwiaWF0IjoxNzMzOTk5MDA4LCJleHAiOjE3NjU1MzUwMDh9.i46h8Jbn007FRwasyWYldMBdmsohI1gAUEjcBiX1Rm0&t=2024-12-12T10%3A23%3A28.595Z",
-    "https://ryahuqeeaejuymakofdj.supabase.co/storage/v1/object/sign/btcn/images/40C0441P01%20(2).jpeg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJidGNuL2ltYWdlcy80MEMwNDQxUDAxICgyKS5qcGVnIiwiaWF0IjoxNzMzOTk5MDIzLCJleHAiOjE3NjU1MzUwMjN9.ZEw4B130WdGo3oRZuwwFfD3qOD3Gh92z60VrlkqPmW4&t=2024-12-12T10%3A23%3A42.884Z",
-  ];
+  String? _userId;
+  PartModel? dataPart;
+  String? modelId;
+
+  final _itemsModal = List<ItemModel>.empty(growable: true);
+  final totalItemsCart = 0.obs;
+  final quantity = 1.obs;
+  final totalPrice = 0.obs;
 
   final carts = RxList<String>.empty();
 
@@ -25,21 +35,157 @@ class DetailPartController extends GetxController {
     if (Get.isRegistered<InitController>()) {
       _initC = Get.find<InitController>();
     }
+
+    _initStorage();
+    _initArgs();
+    _workerListener();
   }
 
-  // void moveToReviews() => Get.toNamed(Routes.REV)
+  void _initStorage() {
+    _userId = _initC.localStorage.read(ConstantsKeys.id);
 
-  void checkout() => Get.toNamed(Routes.CHECKOUT);
+    final data = _initC.localStorage.read(ConstantsKeys.cart);
+
+    if (data is List<ItemModel>) {
+      _itemsModal.addAll(data);
+      totalItemsCart.value = _itemsModal.length;
+    }
+
+    _initC.localStorage.listenKey(
+      ConstantsKeys.cart,
+      (data) {
+        if (data is List<ItemModel>) {
+          _itemsModal.addAll(data);
+          totalItemsCart.value = data.length;
+        }
+      },
+    );
+  }
+
+  void _initArgs() {
+    final args = Get.arguments as Map<String, dynamic>;
+    dataPart = args['part'];
+    modelId = args['modelId'];
+    totalPrice.value = dataPart?.price.toInt() ?? 0;
+  }
+
+  void _workerListener() {
+    debounce(quantity, calculatePricePart);
+  }
+
+  CollectionReference<ReviewModel> colReviews() {
+    final col = _initC.firestore
+        .collection('reviews')
+        .doc(dataPart?.id) // partId
+        .collection(modelId ?? '') // modelId
+        .withConverter(
+          fromFirestore: (snapshot, _) =>
+              ReviewModel.fromJson(snapshot.data()!),
+          toFirestore: (model, _) => model.toJson(),
+        );
+    return col;
+  }
+
+  void calculatePricePart(int quantity) {
+    totalPrice.value = quantity * (dataPart?.price.toInt() ?? 0);
+  }
+
+  void incQuantity() {
+    quantity.value++;
+  }
+
+  void decQuantity() {
+    if (quantity.value > 1) {
+      quantity.value--;
+    }
+  }
+
+  void addToCart() async {
+    Dialogs.loading(context: Get.context!);
+
+    try {
+      final newItemModel = ItemModel(
+        partId: dataPart?.id ?? '',
+        modelId: modelId ?? '',
+        quantity: quantity.value,
+        price: dataPart?.price ?? 0,
+        description: dataPart?.description ?? '',
+      );
+
+      print('newItemModel = ${newItemModel.toJson()}');
+
+      List<ItemModel> items = List.from(_itemsModal);
+
+      print('itemsModal = ${_itemsModal.map((e) => e.toJson()).toList()}');
+
+      // jika itemsModal tidak kosong datanya
+      if (items.isNotEmpty) {
+        // cek apakah ada itemsModal yang sama partId dengan modelId nya
+        final isHasItemModel = items.firstWhereOrNull(
+          (element) =>
+              element.modelId == newItemModel.modelId &&
+              element.partId == newItemModel.partId,
+        );
+
+        print('isHasItemModel = ${isHasItemModel != null}');
+
+        // jika sudah ada modelId dan partId yang sama maka update aja quantity-nya dan price-nya
+        if (isHasItemModel != null) {
+          final totalQuantity = isHasItemModel.quantity + newItemModel.quantity;
+          final indexItem = items.indexOf(isHasItemModel);
+          print('indexItem = $indexItem');
+
+          items[indexItem] = items[indexItem].copyWith(
+            quantity: totalQuantity,
+            // price: isHasItemModel.price * totalQuantity,
+          );
+        } else {
+          items.add(newItemModel);
+        }
+      } else {
+        items = [newItemModel];
+      }
+
+      print('items = ${items.map((e) => e.toJson()).toList()}');
+
+      await _initC.localStorage.write(ConstantsKeys.cart, items);
+      _itemsModal.assignAll(items);
+      totalItemsCart.value = items.length;
+
+      Snackbar.success(
+        context: Get.context!,
+        content: 'Berhasil menambahkan ke keranjang',
+      );
+
+      Get.back();
+    } catch (e) {
+      _initC.logger.e('Erorr: $e');
+    }
+  }
+
+  void checkout() {
+    final orderModel = OrderModel(
+      items: [
+        ItemModel(
+          partId: dataPart?.id ?? '',
+          modelId: modelId ?? '',
+          quantity: quantity.value,
+          price: dataPart?.price ?? 0,
+          description: dataPart?.description ?? '',
+        ),
+      ],
+      price: dataPart?.price ?? 0,
+      totalPrice: totalPrice.value,
+      type: 'request',
+      typeStatus: 'pending',
+      statusPayment: 'credit',
+      userId: _userId ?? '',
+    );
+
+    Get.toNamed(Routes.CHECKOUT, arguments: orderModel);
+  }
 
   void moveToCart() => Get.toNamed(Routes.CART);
 
   void moveToChat() => Get.toNamed(Routes.CHAT);
-
-  void addToCart() {
-    carts.add('Test');
-    Snackbar.success(
-      context: Get.context!,
-      content: 'Berhasil menambahkan ke keranjang',
-    );
-  }
 }

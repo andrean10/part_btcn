@@ -20,19 +20,24 @@ DataModel _$DataModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$DataModel {
-  List<PartModel>? get parts => throw _privateConstructorUsedError;
-  @JsonKey(
-      fromJson: FormatDateTime.timestampFromJson,
-      toJson: FormatDateTime.timestampToJson)
-  DateTime get createdAt => throw _privateConstructorUsedError;
-  @JsonKey(
-      fromJson: FormatDateTime.timestampFromJson,
-      toJson: FormatDateTime.timestampToJson)
-  DateTime get updatedAt => throw _privateConstructorUsedError;
+// List<PartModel>? parts,
   String get id => throw _privateConstructorUsedError;
+  List<String> get partIds => throw _privateConstructorUsedError;
+  @JsonKey(
+      fromJson: FormatDateTime.timestampFromJson,
+      toJson: FormatDateTime.timestampToJson)
+  DateTime? get createdAt => throw _privateConstructorUsedError;
+  @JsonKey(
+      fromJson: FormatDateTime.timestampFromJson,
+      toJson: FormatDateTime.timestampToJson)
+  DateTime? get updatedAt => throw _privateConstructorUsedError;
 
+  /// Serializes this DataModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of DataModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $DataModelCopyWith<DataModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -43,16 +48,16 @@ abstract class $DataModelCopyWith<$Res> {
       _$DataModelCopyWithImpl<$Res, DataModel>;
   @useResult
   $Res call(
-      {List<PartModel>? parts,
+      {String id,
+      List<String> partIds,
       @JsonKey(
           fromJson: FormatDateTime.timestampFromJson,
           toJson: FormatDateTime.timestampToJson)
-      DateTime createdAt,
+      DateTime? createdAt,
       @JsonKey(
           fromJson: FormatDateTime.timestampFromJson,
           toJson: FormatDateTime.timestampToJson)
-      DateTime updatedAt,
-      String id});
+      DateTime? updatedAt});
 }
 
 /// @nodoc
@@ -65,31 +70,33 @@ class _$DataModelCopyWithImpl<$Res, $Val extends DataModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of DataModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? parts = freezed,
-    Object? createdAt = null,
-    Object? updatedAt = null,
     Object? id = null,
+    Object? partIds = null,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
   }) {
     return _then(_value.copyWith(
-      parts: freezed == parts
-          ? _value.parts
-          : parts // ignore: cast_nullable_to_non_nullable
-              as List<PartModel>?,
-      createdAt: null == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      updatedAt: null == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
+      partIds: null == partIds
+          ? _value.partIds
+          : partIds // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ) as $Val);
   }
 }
@@ -103,16 +110,16 @@ abstract class _$$DataModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {List<PartModel>? parts,
+      {String id,
+      List<String> partIds,
       @JsonKey(
           fromJson: FormatDateTime.timestampFromJson,
           toJson: FormatDateTime.timestampToJson)
-      DateTime createdAt,
+      DateTime? createdAt,
       @JsonKey(
           fromJson: FormatDateTime.timestampFromJson,
           toJson: FormatDateTime.timestampToJson)
-      DateTime updatedAt,
-      String id});
+      DateTime? updatedAt});
 }
 
 /// @nodoc
@@ -123,31 +130,33 @@ class __$$DataModelImplCopyWithImpl<$Res>
       _$DataModelImpl _value, $Res Function(_$DataModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of DataModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? parts = freezed,
-    Object? createdAt = null,
-    Object? updatedAt = null,
     Object? id = null,
+    Object? partIds = null,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
   }) {
     return _then(_$DataModelImpl(
-      parts: freezed == parts
-          ? _value._parts
-          : parts // ignore: cast_nullable_to_non_nullable
-              as List<PartModel>?,
-      createdAt: null == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      updatedAt: null == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
+      partIds: null == partIds
+          ? _value._partIds
+          : partIds // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 }
@@ -156,47 +165,46 @@ class __$$DataModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$DataModelImpl implements _DataModel {
   const _$DataModelImpl(
-      {final List<PartModel>? parts,
+      {required this.id,
+      required final List<String> partIds,
       @JsonKey(
           fromJson: FormatDateTime.timestampFromJson,
           toJson: FormatDateTime.timestampToJson)
-      required this.createdAt,
+      this.createdAt,
       @JsonKey(
           fromJson: FormatDateTime.timestampFromJson,
           toJson: FormatDateTime.timestampToJson)
-      required this.updatedAt,
-      required this.id})
-      : _parts = parts;
+      this.updatedAt})
+      : _partIds = partIds;
 
   factory _$DataModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$DataModelImplFromJson(json);
 
-  final List<PartModel>? _parts;
+// List<PartModel>? parts,
   @override
-  List<PartModel>? get parts {
-    final value = _parts;
-    if (value == null) return null;
-    if (_parts is EqualUnmodifiableListView) return _parts;
+  final String id;
+  final List<String> _partIds;
+  @override
+  List<String> get partIds {
+    if (_partIds is EqualUnmodifiableListView) return _partIds;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
+    return EqualUnmodifiableListView(_partIds);
   }
 
   @override
   @JsonKey(
       fromJson: FormatDateTime.timestampFromJson,
       toJson: FormatDateTime.timestampToJson)
-  final DateTime createdAt;
+  final DateTime? createdAt;
   @override
   @JsonKey(
       fromJson: FormatDateTime.timestampFromJson,
       toJson: FormatDateTime.timestampToJson)
-  final DateTime updatedAt;
-  @override
-  final String id;
+  final DateTime? updatedAt;
 
   @override
   String toString() {
-    return 'DataModel(parts: $parts, createdAt: $createdAt, updatedAt: $updatedAt, id: $id)';
+    return 'DataModel(id: $id, partIds: $partIds, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -204,20 +212,22 @@ class _$DataModelImpl implements _DataModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$DataModelImpl &&
-            const DeepCollectionEquality().equals(other._parts, _parts) &&
+            (identical(other.id, id) || other.id == id) &&
+            const DeepCollectionEquality().equals(other._partIds, _partIds) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt) &&
-            (identical(other.id, id) || other.id == id));
+                other.updatedAt == updatedAt));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType,
-      const DeepCollectionEquality().hash(_parts), createdAt, updatedAt, id);
+  int get hashCode => Object.hash(runtimeType, id,
+      const DeepCollectionEquality().hash(_partIds), createdAt, updatedAt);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of DataModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$DataModelImplCopyWith<_$DataModelImpl> get copyWith =>
@@ -233,36 +243,40 @@ class _$DataModelImpl implements _DataModel {
 
 abstract class _DataModel implements DataModel {
   const factory _DataModel(
-      {final List<PartModel>? parts,
+      {required final String id,
+      required final List<String> partIds,
       @JsonKey(
           fromJson: FormatDateTime.timestampFromJson,
           toJson: FormatDateTime.timestampToJson)
-      required final DateTime createdAt,
+      final DateTime? createdAt,
       @JsonKey(
           fromJson: FormatDateTime.timestampFromJson,
           toJson: FormatDateTime.timestampToJson)
-      required final DateTime updatedAt,
-      required final String id}) = _$DataModelImpl;
+      final DateTime? updatedAt}) = _$DataModelImpl;
 
   factory _DataModel.fromJson(Map<String, dynamic> json) =
       _$DataModelImpl.fromJson;
 
-  @override
-  List<PartModel>? get parts;
-  @override
-  @JsonKey(
-      fromJson: FormatDateTime.timestampFromJson,
-      toJson: FormatDateTime.timestampToJson)
-  DateTime get createdAt;
-  @override
-  @JsonKey(
-      fromJson: FormatDateTime.timestampFromJson,
-      toJson: FormatDateTime.timestampToJson)
-  DateTime get updatedAt;
+// List<PartModel>? parts,
   @override
   String get id;
   @override
-  @JsonKey(ignore: true)
+  List<String> get partIds;
+  @override
+  @JsonKey(
+      fromJson: FormatDateTime.timestampFromJson,
+      toJson: FormatDateTime.timestampToJson)
+  DateTime? get createdAt;
+  @override
+  @JsonKey(
+      fromJson: FormatDateTime.timestampFromJson,
+      toJson: FormatDateTime.timestampToJson)
+  DateTime? get updatedAt;
+
+  /// Create a copy of DataModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$DataModelImplCopyWith<_$DataModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../core/init/controllers/init_controller.dart';
 import '../buttons/buttons.dart';
 
 abstract class Dialogs {

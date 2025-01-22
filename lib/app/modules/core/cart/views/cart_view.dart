@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:grouped_list/grouped_list.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import 'package:get/get.dart';
+import 'package:part_btcn/app/data/model/item/item_model.dart';
+import 'package:part_btcn/app/helpers/text_helper.dart';
 
 import '../../../../../shared/shared_theme.dart';
 import '../../../widgets/buttons/buttons.dart';
@@ -21,79 +25,117 @@ class CartView extends GetView<CartController> {
       persistentFooterButtons: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: Buttons.filled(
-            width: double.infinity,
-            onPressed: controller.moveToCheckout,
-            child: const Text('Checkout'),
+          child: Column(
+            children: [
+              Buttons.filled(
+                width: double.infinity,
+                onPressed: controller.moveToCheckout,
+                child: const Text('Checkout'),
+              ),
+              const SizedBox(height: 8),
+              Buttons.text(
+                width: double.infinity,
+                onPressed: controller.clearItems,
+                child: const Text('Hapus Semua Item'),
+              ),
+            ],
           ),
-        )
+        ),
       ],
-      body: CustomScrollView(
-        slivers: [
-          SliverList.separated(
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'CLG906F',
-                      style: textTheme.titleLarge?.copyWith(
-                        fontWeight: SharedTheme.bold,
-                        fontSize: 18,
-                      ),
+      body: Obx(
+        () => controller.items.isNotEmpty
+            ? GroupedListView(
+                elements: controller.items.value,
+                groupBy: (item) => item.modelId,
+                groupSeparatorBuilder: (String modelId) => Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Text(
+                    modelId,
+                    style: textTheme.titleLarge?.copyWith(
+                      fontWeight: SharedTheme.bold,
+                      fontSize: 18,
                     ),
-                    const SizedBox(height: 8),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          contentPadding: EdgeInsets.zero,
+                  ),
+                ),
+                itemBuilder: (context, item) {
+                  return Slidable(
+                    key: ValueKey(item.partId),
+                    endActionPane: ActionPane(
+                      motion: const ScrollMotion(),
+                      children: [
+                        SlidableAction(
+                          onPressed: (context) => controller.deleteItem(item),
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
+                          icon: Icons.delete,
+                          label: 'Delete',
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        ListTile(
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 16),
                           isThreeLine: true,
-                          title: const Text('40C0441P01'),
+                          title: Text(item.partId),
                           titleTextStyle:
                               textTheme.titleLarge?.copyWith(fontSize: 16),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'ENGINE OIL FILTER ELEMENT 机油滤芯 ',
+                                item.description,
                                 style: textTheme.bodyMedium,
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(height: 2),
                               Row(
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      'Rp. 236.600',
-                                      style: textTheme.titleLarge
-                                          ?.copyWith(fontSize: 18),
+                                      TextHelper.formatRupiah(
+                                        amount: item.price,
+                                        isCompact: false,
+                                      ),
+                                      style: textTheme.labelLarge,
                                     ),
                                   ),
                                   const SizedBox(height: 21),
                                   Text(
-                                    'x 1',
+                                    'x ${item.quantity}',
                                     style: textTheme.labelLarge,
                                   ),
                                 ],
-                              )
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Total',
+                                    style: textTheme.titleMedium?.copyWith(
+                                        fontWeight: SharedTheme.bold),
+                                  ),
+                                  Text(
+                                    TextHelper.formatRupiah(
+                                        amount: item.price * item.quantity,
+                                        isCompact: false),
+                                    style: textTheme.titleMedium?.copyWith(
+                                        fontWeight: SharedTheme.bold),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
-                        );
-                      },
-                      itemCount: 2,
+                        ),
+                        const Divider(height: 14),
+                      ],
                     ),
-                  ],
-                ),
-              );
-            },
-            separatorBuilder: (context, index) => const Divider(height: 32),
-            itemCount: 3,
-          )
-        ],
+                  );
+                },
+              )
+            : const Center(child: Text('Keranjang kosong')),
       ),
     );
   }

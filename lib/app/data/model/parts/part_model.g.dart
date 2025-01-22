@@ -12,14 +12,13 @@ _$PartModelImpl _$$PartModelImplFromJson(Map<String, dynamic> json) =>
       images:
           (json['images'] as List<dynamic>?)?.map((e) => e as String).toList(),
       createdAt:
-          FormatDateTime.timestampFromJson(json['createdAt'] as Timestamp),
-      updatedAt:
-          FormatDateTime.timestampFromJson(json['updatedAt'] as Timestamp),
-      price: (json['price'] as num?)?.toInt() ?? 0,
+          FormatDateTime.timestampFromJson(json['createdAt'] as Timestamp?),
+      price: json['price'] as num? ?? 0,
+      quantity: json['quantity'] as num? ?? 0,
+      totalPrice: json['totalPrice'] as num? ?? 0,
       id: json['id'] as String,
-      reviews: (json['reviews'] as List<dynamic>?)
-          ?.map((e) => ReviewModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      modelIds:
+          (json['modelIds'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
 Map<String, dynamic> _$$PartModelImplToJson(_$PartModelImpl instance) =>
@@ -27,8 +26,9 @@ Map<String, dynamic> _$$PartModelImplToJson(_$PartModelImpl instance) =>
       'description': instance.description,
       'images': instance.images,
       'createdAt': FormatDateTime.timestampToJson(instance.createdAt),
-      'updatedAt': FormatDateTime.timestampToJson(instance.updatedAt),
       'price': instance.price,
+      'quantity': instance.quantity,
+      'totalPrice': instance.totalPrice,
       'id': instance.id,
-      'reviews': instance.reviews,
+      'modelIds': instance.modelIds,
     };

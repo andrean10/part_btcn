@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:part_btcn/app/modules/core/chat/screen/chat_admin_screen.dart';
+import 'package:part_btcn/app/modules/core/detail_chat/views/detail_chat_view.dart';
 
 import '../../../../../shared/shared_enum.dart';
 import '../controllers/chat_controller.dart';
-import '../screen/chat_user_screen.dart';
 
 class ChatView extends GetView<ChatController> {
   const ChatView({super.key});
@@ -16,7 +16,7 @@ class ChatView extends GetView<ChatController> {
     if (role.value == Role.admin) {
       return const ChatAdminScreen();
     } else {
-      return const ChatUserScreen();
+      return const DetailChatView();
     }
   }
 }

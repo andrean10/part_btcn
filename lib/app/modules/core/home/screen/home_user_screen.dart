@@ -1,9 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:part_btcn/app/data/model/data/parts/part_model.dart';
+import 'package:part_btcn/app/data/model/parts/part_model.dart';
 import 'package:part_btcn/app/helpers/text_helper.dart';
 import 'package:part_btcn/utils/constants_assets.dart';
 
@@ -21,12 +22,8 @@ class HomeUserScreen extends GetView<HomeController> {
     return Scaffold(
       appBar: _buildAppBar(size, textTheme),
       body: RefreshIndicator.adaptive(
-        onRefresh: () => controller.fetchColModels(),
-        child: _buildGridView(
-          size,
-          textTheme,
-          theme,
-        ),
+        onRefresh: controller.fetchColModels,
+        child: _buildGridView(size, textTheme, theme),
       ),
     );
   }
@@ -50,13 +47,19 @@ class HomeUserScreen extends GetView<HomeController> {
         icon: Stack(
           children: [
             const Icon(Icons.shopping_cart_rounded),
-            Positioned(
-              top: 0,
-              right: 0,
-              child: Badge.count(
-                count: 3,
-                textStyle: textTheme.labelSmall?.copyWith(fontSize: 8),
+            ObxValue(
+              (total) => Visibility(
+                visible: total.value > 0,
+                child: Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Badge.count(
+                    count: total.value,
+                    textStyle: textTheme.labelSmall?.copyWith(fontSize: 8),
+                  ),
+                ),
               ),
+              controller.totalItemsCart,
             ),
           ],
         ),
@@ -79,6 +82,7 @@ class HomeUserScreen extends GetView<HomeController> {
         child: controller.obx(
           (data) {
             final length = data!.length;
+
             return SingleChildScrollView(
               padding: const EdgeInsets.only(bottom: 12),
               scrollDirection: Axis.horizontal,
@@ -96,8 +100,10 @@ class HomeUserScreen extends GetView<HomeController> {
                         label: Text(data[index].id),
                         selected: index == controller.categoryIndex.value,
                         showCheckmark: false,
-                        onSelected: (_) =>
-                            controller.setCategory(data[index].id),
+                        onSelected: (_) => controller.setCategory(
+                          index: index,
+                          id: data[index].id,
+                        ),
                       ),
                     ),
                   ),
@@ -120,7 +126,10 @@ class HomeUserScreen extends GetView<HomeController> {
 
         if (id != null) {
           return FirestoreQueryBuilder(
-            query: controller.colModels(modelId: id),
+            pageSize: 20,
+            query: controller
+                .colParts()
+                .where(FieldPath.fromString('modelIds'), arrayContains: id),
             builder: (context, snapshot, child) {
               if (snapshot.isFetching) {
                 return const Center(child: CircularProgressIndicator());
@@ -130,37 +139,30 @@ class HomeUserScreen extends GetView<HomeController> {
                 return const Center(child: Text('Gagal memuat data'));
               }
 
-              if (!snapshot.hasData && snapshot.docs.isEmpty) {
-                return const Center(child: Text('Model belum ada'));
+              if (snapshot.docs.isEmpty) {
+                return const Center(child: Text('Part belum ada'));
               }
 
-              if (snapshot.hasData) {
-                final dataModel = snapshot.docs
-                    .firstWhere((element) => element.id == id)
-                    .data();
-                final parts = dataModel.parts;
+              if (snapshot.docs.isNotEmpty) {
+                final parts = snapshot.docs;
 
-                if (parts != null) {
-                  return GridView.builder(
-                    padding: const EdgeInsets.all(16),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 21,
-                      childAspectRatio: size.aspectRatio * 1.4,
-                    ),
-                    itemBuilder: (context, index) {
-                      final part = parts[index];
-                      return GestureDetector(
-                        onTap: () => controller.showDetailPart(),
-                        child: _buildGridTile(textTheme, theme, part),
-                      );
-                    },
-                    itemCount: parts.length,
-                  );
-                } else {
-                  return const Center(child: Text('Belum ada part'));
-                }
+                return GridView.builder(
+                  padding: const EdgeInsets.all(16),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 21,
+                    childAspectRatio: size.aspectRatio * 1.4,
+                  ),
+                  itemBuilder: (context, index) {
+                    final part = parts[index].data();
+                    return GestureDetector(
+                      onTap: () => controller.moveToDetailPart(part),
+                      child: _buildGridTile(textTheme, theme, part),
+                    );
+                  },
+                  itemCount: parts.length,
+                );
               }
 
               return const SizedBox.shrink();
@@ -179,6 +181,7 @@ class HomeUserScreen extends GetView<HomeController> {
       borderRadius: BorderRadius.circular(12),
       child: GridTile(
         footer: _buildGridTileBar(textTheme, theme, part),
+        // GAMBAR
         child: CachedNetworkImage(
           imageUrl: part.images?.firstOrNull ?? '',
           fit: BoxFit.cover,

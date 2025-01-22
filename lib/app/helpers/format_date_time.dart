@@ -143,6 +143,9 @@ class FormatDateTime {
   static String formatRelativeDateText(DateTime? dateTime) {
     if (dateTime == null) return '-';
 
+    // Convert GMT DateTime to local time zone
+    dateTime = dateTime.toLocal();
+
     final now = DateTime.now();
     final difference = now.difference(dateTime);
 
@@ -170,12 +173,19 @@ class FormatDateTime {
     }
   }
 
-  static DateTime timestampFromJson(Timestamp timestamp) => timestamp.toDate();
-  static Timestamp timestampToJson(DateTime date) => Timestamp.fromDate(date);
+  static DateTime? timestampFromJson(Timestamp? timestamp) {
+    if (timestamp != null) {
+      return timestamp
+          .toDate()
+          .toLocal(); // Ensure the DateTime is in local time zone
+    }
+    return null;
+  }
 
-  // static DateTime basicFeeFromJson(dynamic json) {
-  //   if (json is Timestamp) {
-  //     return int.tryParse(json) ?? 0;
-  //   }
-  // }
+  static Timestamp? timestampToJson(DateTime? date) {
+    if (date != null) {
+      return Timestamp.fromDate(date);
+    }
+    return null;
+  }
 }

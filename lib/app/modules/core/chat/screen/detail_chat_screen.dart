@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:get/get.dart';
 import 'package:part_btcn/app/modules/core/chat/controllers/chat_controller.dart';
 
@@ -36,20 +35,6 @@ class DetailChatScreen extends GetView<ChatController> {
                 'Admin',
                 style: textTheme.titleSmall,
               ),
-              // Text(
-              //   (DateTime.fromMillisecondsSinceEpoch(
-              //                   controller.getUser().lastSeen ?? 0)
-              //               .minute ==
-              //           DateTime.now().minute)
-              //       ? 'Aktif'
-              //       : 'Terakhir dilihat ${FormatDateTime.dateToString(
-              //           newPattern: 'HH:mm',
-              //           value: DateTime.fromMillisecondsSinceEpoch(
-              //             controller.getUser().lastSeen ?? 0,
-              //           ).toString(),
-              //         )}',
-              //   style: textTheme.bodySmall,
-              // ),
             ],
           ),
         ],
@@ -59,26 +44,28 @@ class DetailChatScreen extends GetView<ChatController> {
   }
 
   Widget _builderBody(BuildContext context, ThemeData theme) {
-    return Obx(
-      () => Chat(
-        theme: DefaultChatTheme(
-          backgroundColor: theme.colorScheme.surface,
-          inputBackgroundColor: theme.colorScheme.secondaryContainer,
-          inputTextColor: theme.colorScheme.onSurface,
-        ),
-        messages: controller.messages.value.reversed.toList(),
-        onSendPressed: controller.handleSendPressed,
-        onAttachmentPressed: controller.handleFileSelection,
-        user: controller.getAdmin(),
-        isAttachmentUploading: false,
-        emptyState: Center(
-          child: Text(
-            'Belum ada pesan',
-            style: context.textTheme.bodyMedium,
-          ),
-        ),
-        isLastPage: true,
-      ),
-    );
+    return const SizedBox.shrink();
+
+    // return Obx(
+    //   () => Chat(
+    //     theme: DefaultChatTheme(
+    //       backgroundColor: theme.colorScheme.surface,
+    //       inputBackgroundColor: theme.colorScheme.secondaryContainer,
+    //       inputTextColor: theme.colorScheme.onSurface,
+    //     ),
+    //     messages: controller.messages.value.reversed.toList(),
+    //     onSendPressed: controller.handleSendPressed,
+    //     onAttachmentPressed: controller.handleFileSelection,
+    //     user: controller.getAdmin(),
+    //     isAttachmentUploading: false,
+    //     emptyState: Center(
+    //       child: Text(
+    //         'Belum ada pesan',
+    //         style: context.textTheme.bodyMedium,
+    //       ),
+    //     ),
+    //     isLastPage: true,
+    //   ),
+    // );
   }
 }

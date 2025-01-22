@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:part_btcn/shared/shared_method.dart';
 
 import '../../../../../utils/constants_keys.dart';
-import '../../../../data/model/users_model.dart';
+import '../../../../data/model/user/users_model.dart';
 import '../../../../routes/app_pages.dart';
 import '../../../core/init/controllers/init_controller.dart';
 

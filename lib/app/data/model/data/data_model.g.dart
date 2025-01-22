@@ -8,20 +8,19 @@ part of 'data_model.dart';
 
 _$DataModelImpl _$$DataModelImplFromJson(Map<String, dynamic> json) =>
     _$DataModelImpl(
-      parts: (json['parts'] as List<dynamic>?)
-          ?.map((e) => PartModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      createdAt:
-          FormatDateTime.timestampFromJson(json['createdAt'] as Timestamp),
-      updatedAt:
-          FormatDateTime.timestampFromJson(json['updatedAt'] as Timestamp),
       id: json['id'] as String,
+      partIds:
+          (json['partIds'] as List<dynamic>).map((e) => e as String).toList(),
+      createdAt:
+          FormatDateTime.timestampFromJson(json['createdAt'] as Timestamp?),
+      updatedAt:
+          FormatDateTime.timestampFromJson(json['updatedAt'] as Timestamp?),
     );
 
 Map<String, dynamic> _$$DataModelImplToJson(_$DataModelImpl instance) =>
     <String, dynamic>{
-      'parts': instance.parts,
+      'id': instance.id,
+      'partIds': instance.partIds,
       'createdAt': FormatDateTime.timestampToJson(instance.createdAt),
       'updatedAt': FormatDateTime.timestampToJson(instance.updatedAt),
-      'id': instance.id,
     };

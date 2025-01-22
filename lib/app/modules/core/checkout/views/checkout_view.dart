@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:part_btcn/app/data/model/item/item_model.dart';
+import 'package:part_btcn/app/data/model/order/order_model.dart';
 import 'package:part_btcn/app/helpers/text_helper.dart';
+import 'package:grouped_list/grouped_list.dart';
 
 import '../../../../../shared/shared_theme.dart';
 import '../controllers/checkout_controller.dart';
@@ -12,84 +15,96 @@ class CheckoutView extends GetView<CheckoutController> {
   @override
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
+    final order = controller.order;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Checkout'),
         centerTitle: true,
       ),
-      body: CustomScrollView(
-        slivers: [
-          SliverList.separated(
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
+      body: order != null
+          ? GroupedListView(
+              elements: order.items ?? <ItemModel>[],
+              groupBy: (item) => item.modelId,
+              groupSeparatorBuilder: (String modelId) => Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Text(
+                  modelId,
+                  style: textTheme.titleLarge?.copyWith(
+                    fontWeight: SharedTheme.bold,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+              itemBuilder: (context, item) {
+                return Column(
                   children: [
-                    Text(
-                      'CLG906F',
-                      style: textTheme.titleLarge?.copyWith(
-                        fontWeight: SharedTheme.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          isThreeLine: true,
-                          title: const Text('40C0441P01'),
-                          titleTextStyle:
-                              textTheme.titleLarge?.copyWith(fontSize: 16),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                    ListTile(
+                      isThreeLine: true,
+                      title: Text(item.partId),
+                      titleTextStyle:
+                          textTheme.titleLarge?.copyWith(fontSize: 16),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.description,
+                            style: textTheme.bodyMedium,
+                          ),
+                          const SizedBox(height: 2),
+                          Row(
                             children: [
-                              Text(
-                                'ENGINE OIL FILTER ELEMENT 机油滤芯 ',
-                                style: textTheme.bodyMedium,
+                              Expanded(
+                                child: Text(
+                                  TextHelper.formatRupiah(
+                                    amount: item.price,
+                                    isCompact: false,
+                                  ),
+                                  style: textTheme.labelLarge,
+                                ),
                               ),
-                              const SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      'Rp. 236.600',
-                                      style: textTheme.titleLarge
-                                          ?.copyWith(fontSize: 18),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 21),
-                                  Text(
-                                    'x 1',
-                                    style: textTheme.labelLarge,
-                                  ),
-                                ],
-                              )
+                              const SizedBox(height: 21),
+                              Text(
+                                'x ${item.quantity}',
+                                style: textTheme.labelLarge,
+                              ),
                             ],
                           ),
-                        );
-                      },
-                      itemCount: 2,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Total',
+                                style: textTheme.titleMedium
+                                    ?.copyWith(fontWeight: SharedTheme.bold),
+                              ),
+                              Text(
+                                TextHelper.formatRupiah(
+                                    amount: item.price * item.quantity,
+                                    isCompact: false),
+                                style: textTheme.titleMedium
+                                    ?.copyWith(fontWeight: SharedTheme.bold),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
+                    const Divider(height: 14),
                   ],
-                ),
-              );
-            },
-            separatorBuilder: (context, index) => const Divider(height: 32),
-            itemCount: 3,
-          )
-        ],
-      ),
-      persistentFooterButtons: _builderPersistentFooter(textTheme),
+                );
+              },
+            )
+          : const Center(child: Text('No items available')),
+      persistentFooterButtons: _builderPersistentFooter(textTheme, order),
     );
   }
 
-  List<Widget> _builderPersistentFooter(TextTheme textTheme) {
+  List<Widget> _builderPersistentFooter(
+    TextTheme textTheme,
+    OrderModel? order,
+  ) {
     return [
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -105,12 +120,15 @@ class CheckoutView extends GetView<CheckoutController> {
               ),
               title: const Text('Voucher Toko'),
               titleTextStyle: textTheme.labelLarge,
-              trailing: Text(
-                TextHelper.formatRupiah(
-                  amount: 12000,
-                  isCompact: false,
-                  isMinus: true,
+              trailing: ObxValue(
+                (voucher) => Text(
+                  TextHelper.formatRupiah(
+                    amount: voucher.value?.fee,
+                    isCompact: false,
+                    isMinus: true,
+                  ),
                 ),
+                controller.voucher,
               ),
               leadingAndTrailingTextStyle: textTheme.labelLarge,
             ),
@@ -135,18 +153,24 @@ class CheckoutView extends GetView<CheckoutController> {
               contentPadding: EdgeInsets.zero,
               visualDensity: VisualDensity.compact,
               title: const Text('Total Pembayaran'),
-              subtitle: Text(
-                TextHelper.formatRupiah(
-                  amount: 236000,
-                  isCompact: false,
-                ),
-              ),
+              subtitle: ObxValue(
+                  (totalPrice) => Text(
+                        TextHelper.formatRupiah(
+                          amount: totalPrice.value,
+                          isCompact: false,
+                        ),
+                      ),
+                  controller.totalPrice),
               titleTextStyle: textTheme.bodySmall,
               subtitleTextStyle: textTheme.bodyLarge,
-              trailing: FilledButton(
-                onPressed: controller.createCheckout,
-                child: const Text('Buat Pesanan'),
-              ),
+              trailing: ObxValue(
+                  (method) => FilledButton(
+                        onPressed: method.value != null
+                            ? controller.createCheckout
+                            : null,
+                        child: const Text('Buat Pesanan'),
+                      ),
+                  controller.methodPayment),
             ),
           ],
         ),

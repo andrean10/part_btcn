@@ -23,10 +23,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         return macos;
       case TargetPlatform.windows:
@@ -48,7 +45,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBX8YRUINt3cVJlwEm4Adr1yOErdSVupBc',
-    appId: '1:95779639063:android:7c84603772232b589ab152',
+    appId: '1:95779639063:android:649eda0cb20eb5c89ab152',
     messagingSenderId: '95779639063',
     projectId: 'part-btcn',
     storageBucket: 'part-btcn.firebasestorage.app',
@@ -71,6 +68,15 @@ class DefaultFirebaseOptions {
     authDomain: 'part-btcn.firebaseapp.com',
     storageBucket: 'part-btcn.firebasestorage.app',
     measurementId: 'G-C39LLDYTXP',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyCFUW6rZlpi6r4Br4NoV54irQi-9dsCAsA',
+    appId: '1:95779639063:ios:34dbc0483a4f245e9ab152',
+    messagingSenderId: '95779639063',
+    projectId: 'part-btcn',
+    storageBucket: 'part-btcn.firebasestorage.app',
+    iosBundleId: 'com.btcn.part',
   );
 
 }

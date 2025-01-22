@@ -1,3 +1,4 @@
+import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:part_btcn/app/helpers/format_date_time.dart';
@@ -20,28 +21,30 @@ class ChatAdminScreen extends GetView<ChatController> {
   AppBar _builderAppBar(TextTheme textTheme) {
     return AppBar(
       title: const Text('Chat'),
-      centerTitle: false,
+      centerTitle: false, // true,  // false,
     );
   }
 
   Widget _builderBody() {
-    print('users = ${controller.users.value}');
+    return FirestoreListView(
+      query: controller
+          .colChats()
+          .orderBy('lastMessage.createdAt', descending: true),
+      itemBuilder: (context, doc) {
+        final chat = doc.data();
 
-    return ListView.builder(
-      itemBuilder: (context, index) {
-        final user = controller.users[index];
         return Column(
           children: [
             ListTile(
               leading: const CircleAvatar(
                 backgroundImage: AssetImage(ConstantsAssets.imgNoPhoto),
               ),
-              title: Text('${user.firstName} ${user.lastName}'),
-              subtitle: const Text('Boleh pak kalau begitu'),
+              title: Text('Testing'),
+              subtitle: Text(chat.lastMessage?.text ?? ''),
               trailing: Text(
                 FormatDateTime.dateToString(
                   newPattern: 'HH:mm',
-                  value: DateTime.now().toString(),
+                  value: chat.lastMessage?.createdAt?.toIso8601String(),
                 ),
               ),
               // isThreeLine: true,
@@ -51,8 +54,34 @@ class ChatAdminScreen extends GetView<ChatController> {
           ],
         );
       },
-      // separatorBuilder: (context, index) => const SizedBox(height: 12),
-      itemCount: controller.users.length,
     );
+
+    // return ListView.builder(
+    //   itemBuilder: (context, index) {
+    //     final user = controller.users[index];
+    //     return Column(
+    //       children: [
+    //         ListTile(
+    //           leading: const CircleAvatar(
+    //             backgroundImage: AssetImage(ConstantsAssets.imgNoPhoto),
+    //           ),
+    //           title: Text('${user.firstName} ${user.lastName}'),
+    //           subtitle: const Text('Boleh pak kalau begitu'),
+    //           trailing: Text(
+    //             FormatDateTime.dateToString(
+    //               newPattern: 'HH:mm',
+    //               value: DateTime.now().toString(),
+    //             ),
+    //           ),
+    //           // isThreeLine: true,
+    //           onTap: controller.moveToDetailChat,
+    //         ),
+    //         const Divider(),
+    //       ],
+    //     );
+    //   },
+    //   // separatorBuilder: (context, index) => const SizedBox(height: 12),
+    //   itemCount: controller.users.length,
+    // );
   }
 }

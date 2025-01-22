@@ -14,12 +14,14 @@ class HomeView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    return switch (controller.mainC.role.value) {
-      Role.admin => const HomeAdminScreen(),
-      Role.direktur => const HomeDirectorScreen(),
-      Role.finance => const HomeFinanceScreen(),
-      Role.user => const HomeUserScreen(),
-      _ => const SizedBox.shrink(),
-    };
+    return Scaffold(
+      body: switch (controller.mainC.role.value) {
+        Role.admin => const HomeAdminScreen(),
+        Role.direktur => const HomeDirectorScreen(),
+        Role.finance => const HomeFinanceScreen(),
+        Role.user => const HomeUserScreen(),
+        _ => const SizedBox.shrink(),
+      },
+    );
   }
 }

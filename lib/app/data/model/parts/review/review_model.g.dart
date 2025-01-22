@@ -8,12 +8,21 @@ part of 'review_model.dart';
 
 _$ReviewModelImpl _$$ReviewModelImplFromJson(Map<String, dynamic> json) =>
     _$ReviewModelImpl(
-      text: json['text'] as String,
+      id: json['id'] as String,
       userId: json['userId'] as String,
+      orderId: json['orderId'] as String,
+      name: json['name'] as String,
+      text: json['text'] as String,
+      createdAt:
+          FormatDateTime.timestampFromJson(json['createdAt'] as Timestamp?),
     );
 
 Map<String, dynamic> _$$ReviewModelImplToJson(_$ReviewModelImpl instance) =>
     <String, dynamic>{
-      'text': instance.text,
+      'id': instance.id,
       'userId': instance.userId,
+      'orderId': instance.orderId,
+      'name': instance.name,
+      'text': instance.text,
+      'createdAt': FormatDateTime.timestampToJson(instance.createdAt),
     };

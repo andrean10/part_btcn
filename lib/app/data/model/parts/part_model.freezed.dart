@@ -25,17 +25,23 @@ mixin _$PartModel {
   @JsonKey(
       fromJson: FormatDateTime.timestampFromJson,
       toJson: FormatDateTime.timestampToJson)
-  DateTime get createdAt => throw _privateConstructorUsedError;
-  @JsonKey(
-      fromJson: FormatDateTime.timestampFromJson,
-      toJson: FormatDateTime.timestampToJson)
-  DateTime get updatedAt => throw _privateConstructorUsedError;
-  int get price => throw _privateConstructorUsedError;
+  DateTime? get createdAt => throw _privateConstructorUsedError; // @JsonKey(
+//   fromJson: FormatDateTime.timestampFromJson,
+//   toJson: FormatDateTime.timestampToJson,
+// )
+// DateTime? updatedAt,
+  num get price => throw _privateConstructorUsedError;
+  num get quantity => throw _privateConstructorUsedError;
+  num get totalPrice => throw _privateConstructorUsedError;
   String get id => throw _privateConstructorUsedError;
-  List<ReviewModel>? get reviews => throw _privateConstructorUsedError;
+  List<String> get modelIds => throw _privateConstructorUsedError;
 
+  /// Serializes this PartModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of PartModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $PartModelCopyWith<PartModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -51,14 +57,12 @@ abstract class $PartModelCopyWith<$Res> {
       @JsonKey(
           fromJson: FormatDateTime.timestampFromJson,
           toJson: FormatDateTime.timestampToJson)
-      DateTime createdAt,
-      @JsonKey(
-          fromJson: FormatDateTime.timestampFromJson,
-          toJson: FormatDateTime.timestampToJson)
-      DateTime updatedAt,
-      int price,
+      DateTime? createdAt,
+      num price,
+      num quantity,
+      num totalPrice,
       String id,
-      List<ReviewModel>? reviews});
+      List<String> modelIds});
 }
 
 /// @nodoc
@@ -71,16 +75,19 @@ class _$PartModelCopyWithImpl<$Res, $Val extends PartModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of PartModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? description = null,
     Object? images = freezed,
-    Object? createdAt = null,
-    Object? updatedAt = null,
+    Object? createdAt = freezed,
     Object? price = null,
+    Object? quantity = null,
+    Object? totalPrice = null,
     Object? id = null,
-    Object? reviews = freezed,
+    Object? modelIds = null,
   }) {
     return _then(_value.copyWith(
       description: null == description
@@ -91,26 +98,30 @@ class _$PartModelCopyWithImpl<$Res, $Val extends PartModel>
           ? _value.images
           : images // ignore: cast_nullable_to_non_nullable
               as List<String>?,
-      createdAt: null == createdAt
+      createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      updatedAt: null == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as DateTime?,
       price: null == price
           ? _value.price
           : price // ignore: cast_nullable_to_non_nullable
-              as int,
+              as num,
+      quantity: null == quantity
+          ? _value.quantity
+          : quantity // ignore: cast_nullable_to_non_nullable
+              as num,
+      totalPrice: null == totalPrice
+          ? _value.totalPrice
+          : totalPrice // ignore: cast_nullable_to_non_nullable
+              as num,
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      reviews: freezed == reviews
-          ? _value.reviews
-          : reviews // ignore: cast_nullable_to_non_nullable
-              as List<ReviewModel>?,
+      modelIds: null == modelIds
+          ? _value.modelIds
+          : modelIds // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ) as $Val);
   }
 }
@@ -129,14 +140,12 @@ abstract class _$$PartModelImplCopyWith<$Res>
       @JsonKey(
           fromJson: FormatDateTime.timestampFromJson,
           toJson: FormatDateTime.timestampToJson)
-      DateTime createdAt,
-      @JsonKey(
-          fromJson: FormatDateTime.timestampFromJson,
-          toJson: FormatDateTime.timestampToJson)
-      DateTime updatedAt,
-      int price,
+      DateTime? createdAt,
+      num price,
+      num quantity,
+      num totalPrice,
       String id,
-      List<ReviewModel>? reviews});
+      List<String> modelIds});
 }
 
 /// @nodoc
@@ -147,16 +156,19 @@ class __$$PartModelImplCopyWithImpl<$Res>
       _$PartModelImpl _value, $Res Function(_$PartModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of PartModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? description = null,
     Object? images = freezed,
-    Object? createdAt = null,
-    Object? updatedAt = null,
+    Object? createdAt = freezed,
     Object? price = null,
+    Object? quantity = null,
+    Object? totalPrice = null,
     Object? id = null,
-    Object? reviews = freezed,
+    Object? modelIds = null,
   }) {
     return _then(_$PartModelImpl(
       description: null == description
@@ -167,26 +179,30 @@ class __$$PartModelImplCopyWithImpl<$Res>
           ? _value._images
           : images // ignore: cast_nullable_to_non_nullable
               as List<String>?,
-      createdAt: null == createdAt
+      createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      updatedAt: null == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as DateTime?,
       price: null == price
           ? _value.price
           : price // ignore: cast_nullable_to_non_nullable
-              as int,
+              as num,
+      quantity: null == quantity
+          ? _value.quantity
+          : quantity // ignore: cast_nullable_to_non_nullable
+              as num,
+      totalPrice: null == totalPrice
+          ? _value.totalPrice
+          : totalPrice // ignore: cast_nullable_to_non_nullable
+              as num,
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      reviews: freezed == reviews
-          ? _value._reviews
-          : reviews // ignore: cast_nullable_to_non_nullable
-              as List<ReviewModel>?,
+      modelIds: null == modelIds
+          ? _value._modelIds
+          : modelIds // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ));
   }
 }
@@ -200,16 +216,14 @@ class _$PartModelImpl implements _PartModel {
       @JsonKey(
           fromJson: FormatDateTime.timestampFromJson,
           toJson: FormatDateTime.timestampToJson)
-      required this.createdAt,
-      @JsonKey(
-          fromJson: FormatDateTime.timestampFromJson,
-          toJson: FormatDateTime.timestampToJson)
-      required this.updatedAt,
+      this.createdAt,
       this.price = 0,
+      this.quantity = 0,
+      this.totalPrice = 0,
       required this.id,
-      final List<ReviewModel>? reviews})
+      required final List<String> modelIds})
       : _images = images,
-        _reviews = reviews;
+        _modelIds = modelIds;
 
   factory _$PartModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$PartModelImplFromJson(json);
@@ -231,30 +245,34 @@ class _$PartModelImpl implements _PartModel {
   @JsonKey(
       fromJson: FormatDateTime.timestampFromJson,
       toJson: FormatDateTime.timestampToJson)
-  final DateTime createdAt;
-  @override
-  @JsonKey(
-      fromJson: FormatDateTime.timestampFromJson,
-      toJson: FormatDateTime.timestampToJson)
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+// @JsonKey(
+//   fromJson: FormatDateTime.timestampFromJson,
+//   toJson: FormatDateTime.timestampToJson,
+// )
+// DateTime? updatedAt,
   @override
   @JsonKey()
-  final int price;
+  final num price;
+  @override
+  @JsonKey()
+  final num quantity;
+  @override
+  @JsonKey()
+  final num totalPrice;
   @override
   final String id;
-  final List<ReviewModel>? _reviews;
+  final List<String> _modelIds;
   @override
-  List<ReviewModel>? get reviews {
-    final value = _reviews;
-    if (value == null) return null;
-    if (_reviews is EqualUnmodifiableListView) return _reviews;
+  List<String> get modelIds {
+    if (_modelIds is EqualUnmodifiableListView) return _modelIds;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
+    return EqualUnmodifiableListView(_modelIds);
   }
 
   @override
   String toString() {
-    return 'PartModel(description: $description, images: $images, createdAt: $createdAt, updatedAt: $updatedAt, price: $price, id: $id, reviews: $reviews)';
+    return 'PartModel(description: $description, images: $images, createdAt: $createdAt, price: $price, quantity: $quantity, totalPrice: $totalPrice, id: $id, modelIds: $modelIds)';
   }
 
   @override
@@ -267,26 +285,31 @@ class _$PartModelImpl implements _PartModel {
             const DeepCollectionEquality().equals(other._images, _images) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
-            (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt) &&
             (identical(other.price, price) || other.price == price) &&
+            (identical(other.quantity, quantity) ||
+                other.quantity == quantity) &&
+            (identical(other.totalPrice, totalPrice) ||
+                other.totalPrice == totalPrice) &&
             (identical(other.id, id) || other.id == id) &&
-            const DeepCollectionEquality().equals(other._reviews, _reviews));
+            const DeepCollectionEquality().equals(other._modelIds, _modelIds));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
       description,
       const DeepCollectionEquality().hash(_images),
       createdAt,
-      updatedAt,
       price,
+      quantity,
+      totalPrice,
       id,
-      const DeepCollectionEquality().hash(_reviews));
+      const DeepCollectionEquality().hash(_modelIds));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of PartModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$PartModelImplCopyWith<_$PartModelImpl> get copyWith =>
@@ -307,14 +330,12 @@ abstract class _PartModel implements PartModel {
       @JsonKey(
           fromJson: FormatDateTime.timestampFromJson,
           toJson: FormatDateTime.timestampToJson)
-      required final DateTime createdAt,
-      @JsonKey(
-          fromJson: FormatDateTime.timestampFromJson,
-          toJson: FormatDateTime.timestampToJson)
-      required final DateTime updatedAt,
-      final int price,
+      final DateTime? createdAt,
+      final num price,
+      final num quantity,
+      final num totalPrice,
       required final String id,
-      final List<ReviewModel>? reviews}) = _$PartModelImpl;
+      required final List<String> modelIds}) = _$PartModelImpl;
 
   factory _PartModel.fromJson(Map<String, dynamic> json) =
       _$PartModelImpl.fromJson;
@@ -327,20 +348,26 @@ abstract class _PartModel implements PartModel {
   @JsonKey(
       fromJson: FormatDateTime.timestampFromJson,
       toJson: FormatDateTime.timestampToJson)
-  DateTime get createdAt;
+  DateTime? get createdAt; // @JsonKey(
+//   fromJson: FormatDateTime.timestampFromJson,
+//   toJson: FormatDateTime.timestampToJson,
+// )
+// DateTime? updatedAt,
   @override
-  @JsonKey(
-      fromJson: FormatDateTime.timestampFromJson,
-      toJson: FormatDateTime.timestampToJson)
-  DateTime get updatedAt;
+  num get price;
   @override
-  int get price;
+  num get quantity;
+  @override
+  num get totalPrice;
   @override
   String get id;
   @override
-  List<ReviewModel>? get reviews;
+  List<String> get modelIds;
+
+  /// Create a copy of PartModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PartModelImplCopyWith<_$PartModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
