@@ -37,11 +37,30 @@ class HomeAdminScreen extends GetView<HomeController> {
 
     return ListTile(
       title: Text('No Order: ${data.id}'),
-      subtitle: Text(
-        '${isRequest ? 'Request Barang' : 'Return Barang'} - ${FormatDateTime.dateToString(
-          newPattern: 'EEE, dd MMM yyyy',
-          value: data.createdAt.toString(),
-        )}',
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '${isRequest ? 'Request Barang' : 'Return Barang'} - ${FormatDateTime.dateToString(
+              newPattern: 'EEE, dd MMM yyyy',
+              value: data.createdAt.toString(),
+            )}',
+          ),
+          const SizedBox(height: 8),
+          Visibility(
+              visible: data.type == 'return',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Alasan',
+                    style: textTheme.labelLarge
+                        ?.copyWith(fontWeight: SharedTheme.bold),
+                  ),
+                  Text(data.reason ?? '-'),
+                ],
+              ))
+        ],
       ),
       titleTextStyle: textTheme.titleSmall,
       subtitleTextStyle: textTheme.bodySmall,
@@ -51,6 +70,7 @@ class HomeAdminScreen extends GetView<HomeController> {
             ? ConstantsAssets.icRequestPart
             : ConstantsAssets.icReturnPart,
       ),
+      isThreeLine: true,
       trailing: _buildState(context, data),
       onTap: () => controller.moveToDetailAdmin(data),
     );

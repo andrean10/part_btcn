@@ -90,7 +90,7 @@ class DetailAdminView extends GetView<DetailAdminController> {
                             ),
                             const SizedBox(width: 4),
                             Visibility(
-                              visible:
+                              visible: controller.data?.type == 'request' &&
                                   controller.data?.typeStatus != 'approved',
                               child: GestureDetector(
                                 onTap: () {
@@ -137,7 +137,9 @@ class DetailAdminView extends GetView<DetailAdminController> {
           children: [
             Builder(
               builder: (context) {
-                if (controller.data?.typeStatus == 'pending') {
+                final data = controller.data;
+
+                if (data?.type == 'request' && data?.typeStatus == 'pending') {
                   return CustomTextFormField(
                     controller: controller.discountC,
                     title: 'Diskon',

@@ -62,11 +62,16 @@ class DetailAdminController extends GetxController {
 
   Future<void> changeStatus(StatusApproval value) async {
     try {
-      final updateData = {
+      final updateData = <FieldPath, dynamic>{
         FieldPath.fromString('typeStatus'): value.name.toLowerCase(),
-        FieldPath.fromString('discount'): int.tryParse(discountC.text) ?? 0,
-        FieldPath.fromString('totalPrice'): totalPrice.value,
       };
+
+      if (data?.type == 'request') {
+        updateData.addAll({
+          FieldPath.fromString('discount'): int.tryParse(discountC.text) ?? 0,
+          FieldPath.fromString('totalPrice'): totalPrice.value,
+        });
+      }
 
       await _initC.firestore
           .collection('order')

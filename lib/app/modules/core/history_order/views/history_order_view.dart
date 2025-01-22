@@ -65,6 +65,8 @@ class HistoryOrderView extends GetView<HistoryOrderController> {
           value: order.createdAt?.toIso8601String(),
         );
 
+        final reason = order.reason;
+
         return ListTile(
           title: Text('No Order : ${order.id}'),
           subtitle: Column(
@@ -72,12 +74,14 @@ class HistoryOrderView extends GetView<HistoryOrderController> {
             children: [
               Text('Dibuat : $formatDateTime'),
               const SizedBox(height: 6),
+              // tipe barang
               _builderState(
                 context: context,
                 title: 'Tipe',
                 typeGood: typeGood,
                 statusApproval: statusApproval,
               ),
+              // status pembayaran
               if (methodPayment != null && statusPayment != null)
                 Container(
                   margin: const EdgeInsets.only(top: 6),
@@ -88,11 +92,30 @@ class HistoryOrderView extends GetView<HistoryOrderController> {
                     statusPayment: statusPayment,
                   ),
                 ),
+              // alasan
+              if (methodPayment != null &&
+                  statusPayment != null &&
+                  reason != null)
+                Container(
+                  margin: const EdgeInsets.only(top: 6),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Alasan',
+                        style: textTheme.labelLarge
+                            ?.copyWith(fontWeight: SharedTheme.bold),
+                      ),
+                      Text(reason),
+                    ],
+                  ),
+                ),
+              // review
               if (order.typeStatus == 'approved' &&
                   order.statusPayment == 'paid' &&
                   !order.isHasReview)
                 Container(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  padding: const EdgeInsets.only(top: 12),
                   child: GestureDetector(
                     onTap: () => controller.showModalReview(order),
                     child: const Text('Tuliskan review'),

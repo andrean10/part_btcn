@@ -4,10 +4,13 @@ import 'package:get/get.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:part_btcn/app/helpers/format_date_time.dart';
 import 'package:part_btcn/app/helpers/text_helper.dart';
+import 'package:part_btcn/app/helpers/validations.dart';
+import 'package:part_btcn/app/modules/widgets/textformfield/custom_textform_field.dart';
 import '../../../../../shared/shared_enum.dart';
 import '../../../../../shared/shared_method.dart';
 import '../../../../../shared/shared_theme.dart';
 import '../../../widgets/buttons/buttons.dart';
+import '../../../widgets/modal/modals.dart';
 import '../controllers/detail_history_controller.dart';
 
 class DetailHistoryView extends GetView<DetailHistoryController> {
@@ -42,7 +45,8 @@ class DetailHistoryView extends GetView<DetailHistoryController> {
         centerTitle: false,
         actions: [
           if (controller.data?.statusPayment == 'paid' &&
-              controller.role == 'user')
+              controller.role == 'user' &&
+              controller.data?.type == 'request')
             Buttons.text(
               onPressed: controller.generateInvoice,
               child: const Text('Invoice'),
@@ -70,6 +74,7 @@ class DetailHistoryView extends GetView<DetailHistoryController> {
                 Visibility(
                   visible: controller.data?.statusPayment == 'credit' &&
                       controller.data?.typePayment != 'cash' &&
+                      controller.data?.type == 'request' &&
                       controller.data?.typeStatus == 'approved',
                   child: Buttons.text(
                     onPressed: controller.pay,
@@ -253,6 +258,19 @@ class DetailHistoryView extends GetView<DetailHistoryController> {
                 ),
               ),
             ),
+            Visibility(
+              visible: controller.mainC.role.value == Role.user &&
+                  controller.data != null &&
+                  !controller.data!.isReturn,
+              child: Container(
+                margin: const EdgeInsets.only(top: 16),
+                child: Buttons.filled(
+                  width: double.infinity,
+                  onPressed: _showModalReason,
+                  child: const Text('Ajukan Pengembalian Barang'),
+                ),
+              ),
+            ),
           ],
         ),
       )
@@ -282,5 +300,36 @@ class DetailHistoryView extends GetView<DetailHistoryController> {
         ),
       ],
     );
+  }
+
+  void _showModalReason() {
+    Modals.bottomSheet(
+      context: Get.context!,
+      content: Form(
+        key: controller.formKey,
+        child: Obx(
+          () => CustomTextFormField(
+            controller: controller.reasonC,
+            title: 'Alasan',
+            isFilled: false,
+            isRequired: true,
+            maxLines: 5,
+            suffixIconState: controller.reason.value.isNotEmpty,
+            validator: (value) => Validation.formField(
+              titleField: 'Alasan',
+              value: value,
+              isRequired: true,
+            ),
+          ),
+        ),
+      ),
+      actions: SizedBox(
+        width: double.infinity,
+        child: Buttons.filled(
+          onPressed: controller.returnPart,
+          child: const Text('Simpan'),
+        ),
+      ),
+    ).whenComplete(() => controller.reasonC.clear());
   }
 }

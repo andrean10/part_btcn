@@ -15,6 +15,19 @@ class OrderModel with _$OrderModel {
   const factory OrderModel({
     @JsonKey(includeFromJson: false, includeToJson: false)
     List<ItemModel>? items,
+    String? id,
+    required String userId,
+    required num price,
+    required num totalPrice,
+    String? statusPayment,
+    required String type,
+    String? typePayment,
+    required String typeStatus,
+    @Default(false) bool isHasReview,
+    @Default(false) bool isReturn,
+    num? discount,
+    VoucherModel? voucher,
+    String? reason,
     @JsonKey(
       fromJson: FormatDateTime.timestampFromJson,
       toJson: FormatDateTime.timestampToJson,
@@ -25,18 +38,6 @@ class OrderModel with _$OrderModel {
       toJson: FormatDateTime.timestampToJson,
     )
     DateTime? updatedAt,
-    String? id,
-    required num price,
-    required num totalPrice,
-    String? statusPayment,
-    required String type,
-    String? typePayment,
-    required String typeStatus,
-    @Default(false) bool isHasReview,
-    num? discount,
-    @Default(false) bool isDelete,
-    required String userId,
-    VoucherModel? voucher,
   }) = _OrderModel;
 
   factory OrderModel.fromJson(Map<String, dynamic> json) =>

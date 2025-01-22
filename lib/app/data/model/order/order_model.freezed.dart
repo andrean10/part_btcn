@@ -22,6 +22,19 @@ OrderModel _$OrderModelFromJson(Map<String, dynamic> json) {
 mixin _$OrderModel {
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<ItemModel>? get items => throw _privateConstructorUsedError;
+  String? get id => throw _privateConstructorUsedError;
+  String get userId => throw _privateConstructorUsedError;
+  num get price => throw _privateConstructorUsedError;
+  num get totalPrice => throw _privateConstructorUsedError;
+  String? get statusPayment => throw _privateConstructorUsedError;
+  String get type => throw _privateConstructorUsedError;
+  String? get typePayment => throw _privateConstructorUsedError;
+  String get typeStatus => throw _privateConstructorUsedError;
+  bool get isHasReview => throw _privateConstructorUsedError;
+  bool get isReturn => throw _privateConstructorUsedError;
+  num? get discount => throw _privateConstructorUsedError;
+  VoucherModel? get voucher => throw _privateConstructorUsedError;
+  String? get reason => throw _privateConstructorUsedError;
   @JsonKey(
       fromJson: FormatDateTime.timestampFromJson,
       toJson: FormatDateTime.timestampToJson)
@@ -30,18 +43,6 @@ mixin _$OrderModel {
       fromJson: FormatDateTime.timestampFromJson,
       toJson: FormatDateTime.timestampToJson)
   DateTime? get updatedAt => throw _privateConstructorUsedError;
-  String? get id => throw _privateConstructorUsedError;
-  num get price => throw _privateConstructorUsedError;
-  num get totalPrice => throw _privateConstructorUsedError;
-  String? get statusPayment => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError;
-  String? get typePayment => throw _privateConstructorUsedError;
-  String get typeStatus => throw _privateConstructorUsedError;
-  bool get isHasReview => throw _privateConstructorUsedError;
-  num? get discount => throw _privateConstructorUsedError;
-  bool get isDelete => throw _privateConstructorUsedError;
-  String get userId => throw _privateConstructorUsedError;
-  VoucherModel? get voucher => throw _privateConstructorUsedError;
 
   /// Serializes this OrderModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -62,15 +63,8 @@ abstract class $OrderModelCopyWith<$Res> {
   $Res call(
       {@JsonKey(includeFromJson: false, includeToJson: false)
       List<ItemModel>? items,
-      @JsonKey(
-          fromJson: FormatDateTime.timestampFromJson,
-          toJson: FormatDateTime.timestampToJson)
-      DateTime? createdAt,
-      @JsonKey(
-          fromJson: FormatDateTime.timestampFromJson,
-          toJson: FormatDateTime.timestampToJson)
-      DateTime? updatedAt,
       String? id,
+      String userId,
       num price,
       num totalPrice,
       String? statusPayment,
@@ -78,10 +72,18 @@ abstract class $OrderModelCopyWith<$Res> {
       String? typePayment,
       String typeStatus,
       bool isHasReview,
+      bool isReturn,
       num? discount,
-      bool isDelete,
-      String userId,
-      VoucherModel? voucher});
+      VoucherModel? voucher,
+      String? reason,
+      @JsonKey(
+          fromJson: FormatDateTime.timestampFromJson,
+          toJson: FormatDateTime.timestampToJson)
+      DateTime? createdAt,
+      @JsonKey(
+          fromJson: FormatDateTime.timestampFromJson,
+          toJson: FormatDateTime.timestampToJson)
+      DateTime? updatedAt});
 
   $VoucherModelCopyWith<$Res>? get voucher;
 }
@@ -102,9 +104,8 @@ class _$OrderModelCopyWithImpl<$Res, $Val extends OrderModel>
   @override
   $Res call({
     Object? items = freezed,
-    Object? createdAt = freezed,
-    Object? updatedAt = freezed,
     Object? id = freezed,
+    Object? userId = null,
     Object? price = null,
     Object? totalPrice = null,
     Object? statusPayment = freezed,
@@ -112,28 +113,26 @@ class _$OrderModelCopyWithImpl<$Res, $Val extends OrderModel>
     Object? typePayment = freezed,
     Object? typeStatus = null,
     Object? isHasReview = null,
+    Object? isReturn = null,
     Object? discount = freezed,
-    Object? isDelete = null,
-    Object? userId = null,
     Object? voucher = freezed,
+    Object? reason = freezed,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
   }) {
     return _then(_value.copyWith(
       items: freezed == items
           ? _value.items
           : items // ignore: cast_nullable_to_non_nullable
               as List<ItemModel>?,
-      createdAt: freezed == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      updatedAt: freezed == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String?,
+      userId: null == userId
+          ? _value.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as String,
       price: null == price
           ? _value.price
           : price // ignore: cast_nullable_to_non_nullable
@@ -162,22 +161,30 @@ class _$OrderModelCopyWithImpl<$Res, $Val extends OrderModel>
           ? _value.isHasReview
           : isHasReview // ignore: cast_nullable_to_non_nullable
               as bool,
+      isReturn: null == isReturn
+          ? _value.isReturn
+          : isReturn // ignore: cast_nullable_to_non_nullable
+              as bool,
       discount: freezed == discount
           ? _value.discount
           : discount // ignore: cast_nullable_to_non_nullable
               as num?,
-      isDelete: null == isDelete
-          ? _value.isDelete
-          : isDelete // ignore: cast_nullable_to_non_nullable
-              as bool,
-      userId: null == userId
-          ? _value.userId
-          : userId // ignore: cast_nullable_to_non_nullable
-              as String,
       voucher: freezed == voucher
           ? _value.voucher
           : voucher // ignore: cast_nullable_to_non_nullable
               as VoucherModel?,
+      reason: freezed == reason
+          ? _value.reason
+          : reason // ignore: cast_nullable_to_non_nullable
+              as String?,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ) as $Val);
   }
 
@@ -207,15 +214,8 @@ abstract class _$$OrderModelImplCopyWith<$Res>
   $Res call(
       {@JsonKey(includeFromJson: false, includeToJson: false)
       List<ItemModel>? items,
-      @JsonKey(
-          fromJson: FormatDateTime.timestampFromJson,
-          toJson: FormatDateTime.timestampToJson)
-      DateTime? createdAt,
-      @JsonKey(
-          fromJson: FormatDateTime.timestampFromJson,
-          toJson: FormatDateTime.timestampToJson)
-      DateTime? updatedAt,
       String? id,
+      String userId,
       num price,
       num totalPrice,
       String? statusPayment,
@@ -223,10 +223,18 @@ abstract class _$$OrderModelImplCopyWith<$Res>
       String? typePayment,
       String typeStatus,
       bool isHasReview,
+      bool isReturn,
       num? discount,
-      bool isDelete,
-      String userId,
-      VoucherModel? voucher});
+      VoucherModel? voucher,
+      String? reason,
+      @JsonKey(
+          fromJson: FormatDateTime.timestampFromJson,
+          toJson: FormatDateTime.timestampToJson)
+      DateTime? createdAt,
+      @JsonKey(
+          fromJson: FormatDateTime.timestampFromJson,
+          toJson: FormatDateTime.timestampToJson)
+      DateTime? updatedAt});
 
   @override
   $VoucherModelCopyWith<$Res>? get voucher;
@@ -246,9 +254,8 @@ class __$$OrderModelImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? items = freezed,
-    Object? createdAt = freezed,
-    Object? updatedAt = freezed,
     Object? id = freezed,
+    Object? userId = null,
     Object? price = null,
     Object? totalPrice = null,
     Object? statusPayment = freezed,
@@ -256,28 +263,26 @@ class __$$OrderModelImplCopyWithImpl<$Res>
     Object? typePayment = freezed,
     Object? typeStatus = null,
     Object? isHasReview = null,
+    Object? isReturn = null,
     Object? discount = freezed,
-    Object? isDelete = null,
-    Object? userId = null,
     Object? voucher = freezed,
+    Object? reason = freezed,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
   }) {
     return _then(_$OrderModelImpl(
       items: freezed == items
           ? _value._items
           : items // ignore: cast_nullable_to_non_nullable
               as List<ItemModel>?,
-      createdAt: freezed == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      updatedAt: freezed == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String?,
+      userId: null == userId
+          ? _value.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as String,
       price: null == price
           ? _value.price
           : price // ignore: cast_nullable_to_non_nullable
@@ -306,22 +311,30 @@ class __$$OrderModelImplCopyWithImpl<$Res>
           ? _value.isHasReview
           : isHasReview // ignore: cast_nullable_to_non_nullable
               as bool,
+      isReturn: null == isReturn
+          ? _value.isReturn
+          : isReturn // ignore: cast_nullable_to_non_nullable
+              as bool,
       discount: freezed == discount
           ? _value.discount
           : discount // ignore: cast_nullable_to_non_nullable
               as num?,
-      isDelete: null == isDelete
-          ? _value.isDelete
-          : isDelete // ignore: cast_nullable_to_non_nullable
-              as bool,
-      userId: null == userId
-          ? _value.userId
-          : userId // ignore: cast_nullable_to_non_nullable
-              as String,
       voucher: freezed == voucher
           ? _value.voucher
           : voucher // ignore: cast_nullable_to_non_nullable
               as VoucherModel?,
+      reason: freezed == reason
+          ? _value.reason
+          : reason // ignore: cast_nullable_to_non_nullable
+              as String?,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 }
@@ -333,15 +346,8 @@ class _$OrderModelImpl with DiagnosticableTreeMixin implements _OrderModel {
   const _$OrderModelImpl(
       {@JsonKey(includeFromJson: false, includeToJson: false)
       final List<ItemModel>? items,
-      @JsonKey(
-          fromJson: FormatDateTime.timestampFromJson,
-          toJson: FormatDateTime.timestampToJson)
-      this.createdAt,
-      @JsonKey(
-          fromJson: FormatDateTime.timestampFromJson,
-          toJson: FormatDateTime.timestampToJson)
-      this.updatedAt,
       this.id,
+      required this.userId,
       required this.price,
       required this.totalPrice,
       this.statusPayment,
@@ -349,10 +355,18 @@ class _$OrderModelImpl with DiagnosticableTreeMixin implements _OrderModel {
       this.typePayment,
       required this.typeStatus,
       this.isHasReview = false,
+      this.isReturn = false,
       this.discount,
-      this.isDelete = false,
-      required this.userId,
-      this.voucher})
+      this.voucher,
+      this.reason,
+      @JsonKey(
+          fromJson: FormatDateTime.timestampFromJson,
+          toJson: FormatDateTime.timestampToJson)
+      this.createdAt,
+      @JsonKey(
+          fromJson: FormatDateTime.timestampFromJson,
+          toJson: FormatDateTime.timestampToJson)
+      this.updatedAt})
       : _items = items;
 
   factory _$OrderModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -370,17 +384,9 @@ class _$OrderModelImpl with DiagnosticableTreeMixin implements _OrderModel {
   }
 
   @override
-  @JsonKey(
-      fromJson: FormatDateTime.timestampFromJson,
-      toJson: FormatDateTime.timestampToJson)
-  final DateTime? createdAt;
-  @override
-  @JsonKey(
-      fromJson: FormatDateTime.timestampFromJson,
-      toJson: FormatDateTime.timestampToJson)
-  final DateTime? updatedAt;
-  @override
   final String? id;
+  @override
+  final String userId;
   @override
   final num price;
   @override
@@ -397,18 +403,28 @@ class _$OrderModelImpl with DiagnosticableTreeMixin implements _OrderModel {
   @JsonKey()
   final bool isHasReview;
   @override
+  @JsonKey()
+  final bool isReturn;
+  @override
   final num? discount;
   @override
-  @JsonKey()
-  final bool isDelete;
-  @override
-  final String userId;
-  @override
   final VoucherModel? voucher;
+  @override
+  final String? reason;
+  @override
+  @JsonKey(
+      fromJson: FormatDateTime.timestampFromJson,
+      toJson: FormatDateTime.timestampToJson)
+  final DateTime? createdAt;
+  @override
+  @JsonKey(
+      fromJson: FormatDateTime.timestampFromJson,
+      toJson: FormatDateTime.timestampToJson)
+  final DateTime? updatedAt;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'OrderModel(items: $items, createdAt: $createdAt, updatedAt: $updatedAt, id: $id, price: $price, totalPrice: $totalPrice, statusPayment: $statusPayment, type: $type, typePayment: $typePayment, typeStatus: $typeStatus, isHasReview: $isHasReview, discount: $discount, isDelete: $isDelete, userId: $userId, voucher: $voucher)';
+    return 'OrderModel(items: $items, id: $id, userId: $userId, price: $price, totalPrice: $totalPrice, statusPayment: $statusPayment, type: $type, typePayment: $typePayment, typeStatus: $typeStatus, isHasReview: $isHasReview, isReturn: $isReturn, discount: $discount, voucher: $voucher, reason: $reason, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -417,9 +433,8 @@ class _$OrderModelImpl with DiagnosticableTreeMixin implements _OrderModel {
     properties
       ..add(DiagnosticsProperty('type', 'OrderModel'))
       ..add(DiagnosticsProperty('items', items))
-      ..add(DiagnosticsProperty('createdAt', createdAt))
-      ..add(DiagnosticsProperty('updatedAt', updatedAt))
       ..add(DiagnosticsProperty('id', id))
+      ..add(DiagnosticsProperty('userId', userId))
       ..add(DiagnosticsProperty('price', price))
       ..add(DiagnosticsProperty('totalPrice', totalPrice))
       ..add(DiagnosticsProperty('statusPayment', statusPayment))
@@ -427,10 +442,12 @@ class _$OrderModelImpl with DiagnosticableTreeMixin implements _OrderModel {
       ..add(DiagnosticsProperty('typePayment', typePayment))
       ..add(DiagnosticsProperty('typeStatus', typeStatus))
       ..add(DiagnosticsProperty('isHasReview', isHasReview))
+      ..add(DiagnosticsProperty('isReturn', isReturn))
       ..add(DiagnosticsProperty('discount', discount))
-      ..add(DiagnosticsProperty('isDelete', isDelete))
-      ..add(DiagnosticsProperty('userId', userId))
-      ..add(DiagnosticsProperty('voucher', voucher));
+      ..add(DiagnosticsProperty('voucher', voucher))
+      ..add(DiagnosticsProperty('reason', reason))
+      ..add(DiagnosticsProperty('createdAt', createdAt))
+      ..add(DiagnosticsProperty('updatedAt', updatedAt));
   }
 
   @override
@@ -439,11 +456,8 @@ class _$OrderModelImpl with DiagnosticableTreeMixin implements _OrderModel {
         (other.runtimeType == runtimeType &&
             other is _$OrderModelImpl &&
             const DeepCollectionEquality().equals(other._items, _items) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
-            (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt) &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.price, price) || other.price == price) &&
             (identical(other.totalPrice, totalPrice) ||
                 other.totalPrice == totalPrice) &&
@@ -456,12 +470,16 @@ class _$OrderModelImpl with DiagnosticableTreeMixin implements _OrderModel {
                 other.typeStatus == typeStatus) &&
             (identical(other.isHasReview, isHasReview) ||
                 other.isHasReview == isHasReview) &&
+            (identical(other.isReturn, isReturn) ||
+                other.isReturn == isReturn) &&
             (identical(other.discount, discount) ||
                 other.discount == discount) &&
-            (identical(other.isDelete, isDelete) ||
-                other.isDelete == isDelete) &&
-            (identical(other.userId, userId) || other.userId == userId) &&
-            (identical(other.voucher, voucher) || other.voucher == voucher));
+            (identical(other.voucher, voucher) || other.voucher == voucher) &&
+            (identical(other.reason, reason) || other.reason == reason) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -469,9 +487,8 @@ class _$OrderModelImpl with DiagnosticableTreeMixin implements _OrderModel {
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(_items),
-      createdAt,
-      updatedAt,
       id,
+      userId,
       price,
       totalPrice,
       statusPayment,
@@ -479,10 +496,12 @@ class _$OrderModelImpl with DiagnosticableTreeMixin implements _OrderModel {
       typePayment,
       typeStatus,
       isHasReview,
+      isReturn,
       discount,
-      isDelete,
-      userId,
-      voucher);
+      voucher,
+      reason,
+      createdAt,
+      updatedAt);
 
   /// Create a copy of OrderModel
   /// with the given fields replaced by the non-null parameter values.
@@ -504,15 +523,8 @@ abstract class _OrderModel implements OrderModel {
   const factory _OrderModel(
       {@JsonKey(includeFromJson: false, includeToJson: false)
       final List<ItemModel>? items,
-      @JsonKey(
-          fromJson: FormatDateTime.timestampFromJson,
-          toJson: FormatDateTime.timestampToJson)
-      final DateTime? createdAt,
-      @JsonKey(
-          fromJson: FormatDateTime.timestampFromJson,
-          toJson: FormatDateTime.timestampToJson)
-      final DateTime? updatedAt,
       final String? id,
+      required final String userId,
       required final num price,
       required final num totalPrice,
       final String? statusPayment,
@@ -520,10 +532,18 @@ abstract class _OrderModel implements OrderModel {
       final String? typePayment,
       required final String typeStatus,
       final bool isHasReview,
+      final bool isReturn,
       final num? discount,
-      final bool isDelete,
-      required final String userId,
-      final VoucherModel? voucher}) = _$OrderModelImpl;
+      final VoucherModel? voucher,
+      final String? reason,
+      @JsonKey(
+          fromJson: FormatDateTime.timestampFromJson,
+          toJson: FormatDateTime.timestampToJson)
+      final DateTime? createdAt,
+      @JsonKey(
+          fromJson: FormatDateTime.timestampFromJson,
+          toJson: FormatDateTime.timestampToJson)
+      final DateTime? updatedAt}) = _$OrderModelImpl;
 
   factory _OrderModel.fromJson(Map<String, dynamic> json) =
       _$OrderModelImpl.fromJson;
@@ -532,17 +552,9 @@ abstract class _OrderModel implements OrderModel {
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<ItemModel>? get items;
   @override
-  @JsonKey(
-      fromJson: FormatDateTime.timestampFromJson,
-      toJson: FormatDateTime.timestampToJson)
-  DateTime? get createdAt;
-  @override
-  @JsonKey(
-      fromJson: FormatDateTime.timestampFromJson,
-      toJson: FormatDateTime.timestampToJson)
-  DateTime? get updatedAt;
-  @override
   String? get id;
+  @override
+  String get userId;
   @override
   num get price;
   @override
@@ -558,13 +570,23 @@ abstract class _OrderModel implements OrderModel {
   @override
   bool get isHasReview;
   @override
+  bool get isReturn;
+  @override
   num? get discount;
   @override
-  bool get isDelete;
-  @override
-  String get userId;
-  @override
   VoucherModel? get voucher;
+  @override
+  String? get reason;
+  @override
+  @JsonKey(
+      fromJson: FormatDateTime.timestampFromJson,
+      toJson: FormatDateTime.timestampToJson)
+  DateTime? get createdAt;
+  @override
+  @JsonKey(
+      fromJson: FormatDateTime.timestampFromJson,
+      toJson: FormatDateTime.timestampToJson)
+  DateTime? get updatedAt;
 
   /// Create a copy of OrderModel
   /// with the given fields replaced by the non-null parameter values.

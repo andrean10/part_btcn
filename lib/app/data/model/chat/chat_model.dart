@@ -9,14 +9,17 @@ part 'chat_model.g.dart';
 
 @freezed
 class ChatModel with _$ChatModel {
+  @JsonSerializable(explicitToJson: true)
   const factory ChatModel({
     required String id,
-    @JsonKey(includeIfNull: false) MessageModel? lastMessage,
+    // @JsonKey(includeIfNull: false)
+    MessageModel? lastMessage,
     @JsonKey(
       fromJson: FormatDateTime.timestampFromJson,
       toJson: FormatDateTime.timestampToJson,
     )
     DateTime? createdAt,
+    String? userName,
   }) = _ChatModel;
 
   factory ChatModel.fromJson(Map<String, dynamic> json) =>

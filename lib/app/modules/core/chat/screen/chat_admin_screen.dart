@@ -21,7 +21,7 @@ class ChatAdminScreen extends GetView<ChatController> {
   AppBar _builderAppBar(TextTheme textTheme) {
     return AppBar(
       title: const Text('Chat'),
-      centerTitle: false, // true,  // false,
+      centerTitle: false,
     );
   }
 
@@ -31,57 +31,28 @@ class ChatAdminScreen extends GetView<ChatController> {
           .colChats()
           .orderBy('lastMessage.createdAt', descending: true),
       itemBuilder: (context, doc) {
-        final chat = doc.data();
-
+        final dataChat = doc.data();
         return Column(
           children: [
             ListTile(
               leading: const CircleAvatar(
                 backgroundImage: AssetImage(ConstantsAssets.imgNoPhoto),
               ),
-              title: Text('Testing'),
-              subtitle: Text(chat.lastMessage?.text ?? ''),
+              title: Text(dataChat.userName ?? '-'),
+              subtitle: Text(dataChat.lastMessage?.text ?? ''),
               trailing: Text(
                 FormatDateTime.dateToString(
                   newPattern: 'HH:mm',
-                  value: chat.lastMessage?.createdAt?.toIso8601String(),
+                  value: dataChat.lastMessage?.createdAt?.toString(),
                 ),
               ),
               // isThreeLine: true,
-              onTap: controller.moveToDetailChat,
+              onTap: () => controller.moveToDetailChat(dataChat),
             ),
             const Divider(),
           ],
         );
       },
     );
-
-    // return ListView.builder(
-    //   itemBuilder: (context, index) {
-    //     final user = controller.users[index];
-    //     return Column(
-    //       children: [
-    //         ListTile(
-    //           leading: const CircleAvatar(
-    //             backgroundImage: AssetImage(ConstantsAssets.imgNoPhoto),
-    //           ),
-    //           title: Text('${user.firstName} ${user.lastName}'),
-    //           subtitle: const Text('Boleh pak kalau begitu'),
-    //           trailing: Text(
-    //             FormatDateTime.dateToString(
-    //               newPattern: 'HH:mm',
-    //               value: DateTime.now().toString(),
-    //             ),
-    //           ),
-    //           // isThreeLine: true,
-    //           onTap: controller.moveToDetailChat,
-    //         ),
-    //         const Divider(),
-    //       ],
-    //     );
-    //   },
-    //   // separatorBuilder: (context, index) => const SizedBox(height: 12),
-    //   itemCount: controller.users.length,
-    // );
   }
 }

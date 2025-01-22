@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 import '../../../../../utils/constants_assets.dart';
-import '../../../../data/model/chat/message/message_model.dart';
+import '../../../../data/model/chat/chat_model.dart';
 import '../controllers/detail_chat_controller.dart';
 
 class DetailChatView extends StatefulWidget {
@@ -28,17 +28,32 @@ class _DetailChatViewState extends State<DetailChatView> {
 
   Future<void> _initStream() async {
     final colChats = controller.colChats();
-    final dataChat = await colChats
-        .where(
-          FieldPath.fromString('participants'),
-          arrayContains: controller.userId,
-        )
-        .get();
 
-    if (dataChat.size != 0) {
-      final docChats = dataChat.docs.first;
-      final chatId = docChats.id;
-      controller.chatId.value = chatId;
+    // jika role user
+
+    ChatModel? dataChat;
+
+    print('role = ${controller.role}');
+
+    if (controller.role == 'user') {
+      // user
+      // ambil data
+      final queryChat = await colChats
+          .where(
+            FieldPath.fromString('participants'),
+            arrayContains: controller.userId,
+          )
+          .limit(1)
+          .get();
+      dataChat = queryChat.docs.firstOrNull?.data();
+      controller.dataChat.value = dataChat;
+    } else {
+      // admin
+      dataChat = controller.dataChat.value;
+    }
+
+    if (dataChat != null) {
+      final chatId = dataChat.id;
 
       final snapshotMessages = controller
           .colMessages(chatId)
@@ -72,56 +87,37 @@ class _DetailChatViewState extends State<DetailChatView> {
     }
   }
 
-  Future<void> _addMessage(types.Message message, String msgText) async {
-    final msg = MessageModel(
-      id: message.id,
-      userId: controller.userId,
-      text: msgText,
-      createdAt: DateTime.now(),
-    );
-
-    await controller
-        .colMessages('${controller.chatId}')
-        .doc(message.id)
-        .set(msg);
-  }
-
-  void _handleSendPressed(types.PartialText message) {
-    final colMsg = controller.colMessages('${controller.chatId}');
-    final docMsg = colMsg.doc();
-
-    final textMessage = types.TextMessage(
-      author: types.User(id: '${controller.userId}'),
-      createdAt: DateTime.now().millisecondsSinceEpoch,
-      id: docMsg.id,
-      text: message.text,
-    );
-
-    _addMessage(textMessage, message.text);
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
     final textTheme = context.textTheme;
 
     return Scaffold(
-      appBar: _builderAppBar(textTheme),
+      appBar: _builderAppBar(
+        textTheme: textTheme,
+        controller: controller,
+      ),
       body: Chat(
         theme: DefaultChatTheme(
           backgroundColor: theme.colorScheme.surface,
           inputBackgroundColor: theme.colorScheme.secondaryContainer,
           inputTextColor: theme.colorScheme.onSurface,
         ),
+        user: types.User(
+          id: '${controller.userId}',
+          role: types.Role.user,
+        ),
         messages: _messages,
-        onSendPressed: _handleSendPressed,
-        user: types.User(id: '${controller.userId}'),
+        onSendPressed: controller.handleSendPressed,
       ),
     );
   }
 }
 
-AppBar _builderAppBar(TextTheme textTheme) {
+AppBar _builderAppBar({
+  required TextTheme textTheme,
+  required DetailChatController controller,
+}) {
   return AppBar(
     title: Row(
       children: [
@@ -134,10 +130,18 @@ AppBar _builderAppBar(TextTheme textTheme) {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              'Admin',
-              style: textTheme.titleSmall,
-            ),
+            Builder(builder: (context) {
+              var name = 'Admin';
+
+              if (controller.role == 'admin') {
+                name = controller.dataChat.value?.userName ?? '';
+              }
+
+              return Text(
+                name,
+                style: textTheme.titleSmall,
+              );
+            }),
           ],
         ),
       ],

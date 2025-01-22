@@ -89,7 +89,7 @@ class LoginView extends GetView<LoginController> {
           _builderEmail(),
           const SizedBox(height: 21),
           _builderPassword(),
-          // const Spacer(),
+          
         ],
       ),
     );
@@ -118,7 +118,6 @@ class LoginView extends GetView<LoginController> {
         controller: controller.emailC,
         focusNode: controller.emailF,
         title: 'Email',
-        // hintText: ConstantsStrings.hintUsernameOrEmail,
         isFilled: true,
         isLabel: true,
         prefixIcon: Icons.person_rounded,

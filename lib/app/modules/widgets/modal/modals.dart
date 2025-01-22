@@ -26,7 +26,7 @@ abstract class Modals {
     if (actions != null) {
       widgetActions = Column(
         children: [
-          const SizedBox(height: 8),
+          const SizedBox(height: 16),
           actions,
           const SizedBox(height: 21),
         ],
@@ -102,7 +102,7 @@ abstract class Modals {
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(20)),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,

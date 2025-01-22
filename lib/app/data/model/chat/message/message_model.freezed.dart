@@ -23,8 +23,7 @@ mixin _$MessageModel {
   String get id => throw _privateConstructorUsedError;
   @JsonKey(includeIfNull: false)
   String? get userId => throw _privateConstructorUsedError;
-  String get text =>
-      throw _privateConstructorUsedError; // required String status,
+  String get text => throw _privateConstructorUsedError;
   @JsonKey(
       fromJson: FormatDateTime.timestampFromJson,
       toJson: FormatDateTime.timestampToJson)
@@ -176,7 +175,6 @@ class _$MessageModelImpl implements _MessageModel {
   final String? userId;
   @override
   final String text;
-// required String status,
   @override
   @JsonKey(
       fromJson: FormatDateTime.timestampFromJson,
@@ -239,7 +237,7 @@ abstract class _MessageModel implements MessageModel {
   @JsonKey(includeIfNull: false)
   String? get userId;
   @override
-  String get text; // required String status,
+  String get text;
   @override
   @JsonKey(
       fromJson: FormatDateTime.timestampFromJson,

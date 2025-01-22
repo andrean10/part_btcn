@@ -25,22 +25,6 @@ class LoginController extends GetxController {
   final isVisiblePassword = false.obs;
   final isHidePassword = true.obs;
 
-  // DUMMY ADMIN
-  final emailDummyAdmin = 'sandradia@gmail.com';
-  final passwordDummyAdmin = '12345678';
-
-  // DUMMY USER
-  final emailDummyUser = 'user@gmail.com';
-  final passwordDummyUser = '12345678';
-
-  // DUMMY FINANCE
-  final emailDummyFinance = 'finance@gmail.com';
-  final passwordDummyFinance = '12345678';
-
-  // DUMMY DIREKTUR
-  final emailDummyDirektur = 'director@gmail.com';
-  final passwordDummyDirektur = '12345678';
-
   final errMsg = RxnString();
 
   @override

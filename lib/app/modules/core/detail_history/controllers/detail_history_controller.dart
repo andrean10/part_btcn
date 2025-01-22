@@ -20,9 +20,14 @@ class DetailHistoryController extends GetxController {
   late final InitController _initC;
   late final MainController mainC;
 
+  final formKey = GlobalKey<FormState>();
+  final reasonC = TextEditingController();
+
   OrderModel? data;
   var name = '';
   var role = '';
+
+  final reason = ''.obs;
 
   @override
   void onInit() {
@@ -42,6 +47,12 @@ class DetailHistoryController extends GetxController {
     data = Get.arguments as OrderModel;
     name = _initC.localStorage.read(ConstantsKeys.name);
     role = _initC.localStorage.read(ConstantsKeys.role);
+
+    _initListener();
+  }
+
+  void _initListener() {
+    reasonC.addListener(() => reason.value = reasonC.text);
   }
 
   CollectionReference<OrderModel> colOrder() {
@@ -52,8 +63,11 @@ class DetailHistoryController extends GetxController {
     return col;
   }
 
-  CollectionReference<ItemModel> colItems() {
-    final col = colOrder().doc(data?.id).collection('items').withConverter(
+  CollectionReference<ItemModel> colItems({String? id}) {
+    final col = colOrder()
+        .doc(id ?? data?.id)
+        .collection('items')
+        .withConverter(
           fromFirestore: (snapshot, _) => ItemModel.fromJson(snapshot.data()!),
           toFirestore: (model, _) => model.toJson(),
         );
@@ -67,9 +81,6 @@ class DetailHistoryController extends GetxController {
       if (data == null) {
         return;
       }
-
-      // get col items
-      final items = await colItems().get();
 
       await PDFHelper.generateInvoicePDF(data, name);
       Snackbar.success(
@@ -95,6 +106,58 @@ class DetailHistoryController extends GetxController {
       Get.back();
     } on FirebaseException catch (e) {
       _initC.logger.e('Error: code = ${e.code}\n${e.message}');
+    }
+  }
+
+  Future<void> returnPart() async {
+    Dialogs.loading(context: Get.context!);
+
+    final now = DateTime.now();
+    final newDocOrder = colOrder().doc();
+    final newOrder = data?.copyWith.call(
+      id: newDocOrder.id,
+      type: 'return',
+      typeStatus: 'pending',
+      isReturn: true,
+      reason: reasonC.text.toString().trim(),
+      createdAt: now,
+      updatedAt: now,
+    );
+    final parts = newOrder?.items;
+
+    print('newOrder = ${newOrder?.toJson()}');
+
+    if (newOrder != null) {
+      try {
+        final batch = _initC.firestore.batch();
+
+        // tambahkan order return barang
+        batch.set(newDocOrder, newOrder);
+
+        // tambahkan itemsnya
+        for (var part in parts!) {
+          final newItemDoc = colItems(id: newDocOrder.id).doc();
+          batch.set(newItemDoc, part);
+        }
+
+        // update data lama menjadi isReturn true
+        final oldOrderDoc = colOrder().doc(data?.id);
+        batch.update(oldOrderDoc, {'isReturn': true});
+
+        await batch.commit();
+
+        Snackbar.success(
+          context: Get.context!,
+          content: 'Pengajuan barang berhasil, pengajuanmu sedang dalam review',
+        );
+
+        Get.back();
+        Get.back();
+      } on FirebaseException catch (e) {
+        _initC.logger.e('Error: code = ${e.code}\n${e.message}');
+      } finally {
+        Get.back();
+      }
     }
   }
 

@@ -20,13 +20,14 @@ ChatModel _$ChatModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$ChatModel {
-  String get id => throw _privateConstructorUsedError;
-  @JsonKey(includeIfNull: false)
+  String get id =>
+      throw _privateConstructorUsedError; // @JsonKey(includeIfNull: false)
   MessageModel? get lastMessage => throw _privateConstructorUsedError;
   @JsonKey(
       fromJson: FormatDateTime.timestampFromJson,
       toJson: FormatDateTime.timestampToJson)
   DateTime? get createdAt => throw _privateConstructorUsedError;
+  String? get userName => throw _privateConstructorUsedError;
 
   /// Serializes this ChatModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -45,11 +46,12 @@ abstract class $ChatModelCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      @JsonKey(includeIfNull: false) MessageModel? lastMessage,
+      MessageModel? lastMessage,
       @JsonKey(
           fromJson: FormatDateTime.timestampFromJson,
           toJson: FormatDateTime.timestampToJson)
-      DateTime? createdAt});
+      DateTime? createdAt,
+      String? userName});
 
   $MessageModelCopyWith<$Res>? get lastMessage;
 }
@@ -72,6 +74,7 @@ class _$ChatModelCopyWithImpl<$Res, $Val extends ChatModel>
     Object? id = null,
     Object? lastMessage = freezed,
     Object? createdAt = freezed,
+    Object? userName = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -86,6 +89,10 @@ class _$ChatModelCopyWithImpl<$Res, $Val extends ChatModel>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      userName: freezed == userName
+          ? _value.userName
+          : userName // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 
@@ -114,11 +121,12 @@ abstract class _$$ChatModelImplCopyWith<$Res>
   @useResult
   $Res call(
       {String id,
-      @JsonKey(includeIfNull: false) MessageModel? lastMessage,
+      MessageModel? lastMessage,
       @JsonKey(
           fromJson: FormatDateTime.timestampFromJson,
           toJson: FormatDateTime.timestampToJson)
-      DateTime? createdAt});
+      DateTime? createdAt,
+      String? userName});
 
   @override
   $MessageModelCopyWith<$Res>? get lastMessage;
@@ -140,6 +148,7 @@ class __$$ChatModelImplCopyWithImpl<$Res>
     Object? id = null,
     Object? lastMessage = freezed,
     Object? createdAt = freezed,
+    Object? userName = freezed,
   }) {
     return _then(_$ChatModelImpl(
       id: null == id
@@ -154,38 +163,46 @@ class __$$ChatModelImplCopyWithImpl<$Res>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      userName: freezed == userName
+          ? _value.userName
+          : userName // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$ChatModelImpl implements _ChatModel {
   const _$ChatModelImpl(
       {required this.id,
-      @JsonKey(includeIfNull: false) this.lastMessage,
+      this.lastMessage,
       @JsonKey(
           fromJson: FormatDateTime.timestampFromJson,
           toJson: FormatDateTime.timestampToJson)
-      this.createdAt});
+      this.createdAt,
+      this.userName});
 
   factory _$ChatModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$ChatModelImplFromJson(json);
 
   @override
   final String id;
+// @JsonKey(includeIfNull: false)
   @override
-  @JsonKey(includeIfNull: false)
   final MessageModel? lastMessage;
   @override
   @JsonKey(
       fromJson: FormatDateTime.timestampFromJson,
       toJson: FormatDateTime.timestampToJson)
   final DateTime? createdAt;
+  @override
+  final String? userName;
 
   @override
   String toString() {
-    return 'ChatModel(id: $id, lastMessage: $lastMessage, createdAt: $createdAt)';
+    return 'ChatModel(id: $id, lastMessage: $lastMessage, createdAt: $createdAt, userName: $userName)';
   }
 
   @override
@@ -197,12 +214,15 @@ class _$ChatModelImpl implements _ChatModel {
             (identical(other.lastMessage, lastMessage) ||
                 other.lastMessage == lastMessage) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            (identical(other.userName, userName) ||
+                other.userName == userName));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, lastMessage, createdAt);
+  int get hashCode =>
+      Object.hash(runtimeType, id, lastMessage, createdAt, userName);
 
   /// Create a copy of ChatModel
   /// with the given fields replaced by the non-null parameter values.
@@ -223,25 +243,27 @@ class _$ChatModelImpl implements _ChatModel {
 abstract class _ChatModel implements ChatModel {
   const factory _ChatModel(
       {required final String id,
-      @JsonKey(includeIfNull: false) final MessageModel? lastMessage,
+      final MessageModel? lastMessage,
       @JsonKey(
           fromJson: FormatDateTime.timestampFromJson,
           toJson: FormatDateTime.timestampToJson)
-      final DateTime? createdAt}) = _$ChatModelImpl;
+      final DateTime? createdAt,
+      final String? userName}) = _$ChatModelImpl;
 
   factory _ChatModel.fromJson(Map<String, dynamic> json) =
       _$ChatModelImpl.fromJson;
 
   @override
-  String get id;
+  String get id; // @JsonKey(includeIfNull: false)
   @override
-  @JsonKey(includeIfNull: false)
   MessageModel? get lastMessage;
   @override
   @JsonKey(
       fromJson: FormatDateTime.timestampFromJson,
       toJson: FormatDateTime.timestampToJson)
   DateTime? get createdAt;
+  @override
+  String? get userName;
 
   /// Create a copy of ChatModel
   /// with the given fields replaced by the non-null parameter values.

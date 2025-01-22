@@ -1,8 +1,4 @@
-import 'dart:convert';
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:part_btcn/app/data/model/user/users_model.dart';
 import 'package:part_btcn/app/modules/core/init/controllers/init_controller.dart';
@@ -53,5 +49,6 @@ class ChatController extends GetxController {
     return col;
   }
 
-  void moveToDetailChat() => Get.toNamed(Routes.DETAIL_CHAT);
+  void moveToDetailChat(ChatModel dataChat) =>
+      Get.toNamed(Routes.DETAIL_CHAT, arguments: dataChat);
 }
